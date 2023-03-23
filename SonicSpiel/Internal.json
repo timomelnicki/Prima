@@ -1,4 +1,106 @@
 {
+  "MeshQuad|2023-03-22T14:15:43.367Z|55732": {
+    "ƒ.MeshQuad": {
+      "idResource": "MeshQuad|2023-03-22T14:15:43.367Z|55732",
+      "name": "MeshQuad"
+    }
+  },
+  "Material|2023-03-22T14:33:18.438Z|17402": {
+    "ƒ.Material": {
+      "name": "background",
+      "idResource": "Material|2023-03-22T14:33:18.438Z|17402",
+      "shader": "ShaderLitTextured",
+      "coat": {
+        "ƒ.CoatTextured": {
+          "color": "[1, 1, 1, 1]",
+          "idTexture": "TextureImage|2023-03-22T14:33:59.748Z|03205"
+        }
+      }
+    }
+  },
+  "TextureImage|2023-03-22T14:33:59.748Z|03205": {
+    "ƒ.TextureImage": {
+      "url": "images\\background.png",
+      "type": "TextureImage",
+      "Texture": {
+        "idResource": "TextureImage|2023-03-22T14:33:59.748Z|03205",
+        "name": "images\\background.png",
+        "mipmap": "CRISP"
+      }
+    }
+  },
+  "Material|2023-03-22T14:34:32.487Z|37691": {
+    "ƒ.Material": {
+      "name": "Knuckles",
+      "idResource": "Material|2023-03-22T14:34:32.487Z|37691",
+      "shader": "ShaderLitTextured",
+      "coat": {
+        "ƒ.CoatTextured": {
+          "color": "[1, 1, 1, 1]",
+          "idTexture": "TextureImage|2023-03-22T14:34:40.059Z|84037"
+        }
+      }
+    }
+  },
+  "TextureImage|2023-03-22T14:34:40.059Z|84037": {
+    "ƒ.TextureImage": {
+      "url": "images\\knuckles.png",
+      "type": "TextureImage",
+      "Texture": {
+        "idResource": "TextureImage|2023-03-22T14:34:40.059Z|84037",
+        "name": "images\\knuckles.png",
+        "mipmap": "CRISP"
+      }
+    }
+  },
+  "Material|2023-03-22T14:16:20.847Z|98126": {
+    "ƒ.Material": {
+      "name": "block",
+      "idResource": "Material|2023-03-22T14:16:20.847Z|98126",
+      "shader": "ShaderLitTextured",
+      "coat": {
+        "ƒ.CoatTextured": {
+          "color": "[1, 1, 1, 1]",
+          "idTexture": "TextureImage|2023-03-22T14:16:50.622Z|67707"
+        }
+      }
+    }
+  },
+  "TextureImage|2023-03-22T14:16:50.622Z|67707": {
+    "ƒ.TextureImage": {
+      "url": "images\\singleblock.png",
+      "type": "TextureImage",
+      "Texture": {
+        "idResource": "TextureImage|2023-03-22T14:16:50.622Z|67707",
+        "name": "images\\singleblock.png",
+        "mipmap": "CRISP"
+      }
+    }
+  },
+  "Material|2023-03-22T14:49:43.366Z|92097": {
+    "ƒ.Material": {
+      "name": "Flower",
+      "idResource": "Material|2023-03-22T14:49:43.366Z|92097",
+      "shader": "ShaderLitTextured",
+      "coat": {
+        "ƒ.CoatTextured": {
+          "color": "[1, 1, 1, 1]",
+          "idTexture": "TextureImage|2023-03-22T14:49:59.403Z|86181"
+        }
+      }
+    }
+  },
+  "TextureImage|2023-03-22T14:49:59.403Z|86181": {
+    "ƒ.TextureImage": {
+      "url": "images\\flower.png",
+      "type": "TextureImage",
+      "Texture": {
+        "idResource": "TextureImage|2023-03-22T14:49:59.403Z|86181",
+        "name": "images\\flower.png",
+        "mipmap": "CRISP"
+      }
+    }
+  },
   "Graph|2023-03-22T14:15:18.647Z|32700": {
     "ƒ.Graph": {
       "name": "Szene",
@@ -104,13 +206,55 @@
                       {
                         "ƒ.ComponentTransform": {
                           "local": {
-                            "translation": "[-0.19900000095367432, -0.20000001788139343, 0.004999999888241291]",
+                            "translation": "[-0.19900000095367432, -0.20000001788139343, 0.006000000052154064]",
                             "rotation": "[0, 0, 0]",
                             "scaling": "[0.12000000476837158, 0.12000000476837158, 0.05000000074505806]"
                           },
                           "Component": {
                             "active": true
                           }
+                        }
+                      }
+                    ]
+                  },
+                  "children": []
+                }
+              },
+              {
+                "ƒ.Node": {
+                  "name": "knuckles2",
+                  "active": true,
+                  "components": {
+                    "ComponentMesh": [
+                      {
+                        "ƒ.ComponentMesh": {
+                          "idMesh": "MeshSprite|2023-03-23T13:59:21.529Z|08126",
+                          "pivot": {
+                            "translation": "[0, -0.17000001668930054, 0.009999999776482582]",
+                            "rotation": "[0, 0, 0]",
+                            "scaling": "[0.11999998241662979, 0.12000000476837158, 0]"
+                          },
+                          "Component": {
+                            "active": true
+                          }
+                        }
+                      }
+                    ],
+                    "ComponentMaterial": [
+                      {
+                        "ƒ.ComponentMaterial": {
+                          "sortForAlpha": false,
+                          "clrPrimary": "[1, 1, 1, 1]",
+                          "clrSecondary": "[1, 1, 1, 1]",
+                          "pivot": {
+                            "translation": "[0, 0]",
+                            "rotation": 0,
+                            "scaling": "[1, 1]"
+                          },
+                          "Component": {
+                            "active": true
+                          },
+                          "idMaterial": "Material|2023-03-22T14:34:32.487Z|37691"
                         }
                       }
                     ]
@@ -1398,106 +1542,11 @@
       "type": "Graph"
     }
   },
-  "MeshQuad|2023-03-22T14:15:43.367Z|55732": {
-    "ƒ.MeshQuad": {
-      "idResource": "MeshQuad|2023-03-22T14:15:43.367Z|55732",
-      "name": "MeshQuad"
-    }
-  },
-  "Material|2023-03-22T14:16:20.847Z|98126": {
-    "ƒ.Material": {
-      "name": "block",
-      "idResource": "Material|2023-03-22T14:16:20.847Z|98126",
-      "shader": "ShaderLitTextured",
-      "coat": {
-        "ƒ.CoatTextured": {
-          "color": "[1, 1, 1, 1]",
-          "idTexture": "TextureImage|2023-03-22T14:16:50.622Z|67707"
-        }
-      }
-    }
-  },
-  "TextureImage|2023-03-22T14:16:50.622Z|67707": {
-    "ƒ.TextureImage": {
-      "url": "images\\singleblock.png",
-      "type": "TextureImage",
-      "Texture": {
-        "idResource": "TextureImage|2023-03-22T14:16:50.622Z|67707",
-        "name": "images\\singleblock.png",
-        "mipmap": "CRISP"
-      }
-    }
-  },
-  "Material|2023-03-22T14:33:18.438Z|17402": {
-    "ƒ.Material": {
-      "name": "background",
-      "idResource": "Material|2023-03-22T14:33:18.438Z|17402",
-      "shader": "ShaderLitTextured",
-      "coat": {
-        "ƒ.CoatTextured": {
-          "color": "[1, 1, 1, 1]",
-          "idTexture": "TextureImage|2023-03-22T14:33:59.748Z|03205"
-        }
-      }
-    }
-  },
-  "TextureImage|2023-03-22T14:33:59.748Z|03205": {
-    "ƒ.TextureImage": {
-      "url": "images\\background.png",
-      "type": "TextureImage",
-      "Texture": {
-        "idResource": "TextureImage|2023-03-22T14:33:59.748Z|03205",
-        "name": "images\\background.png",
-        "mipmap": "CRISP"
-      }
-    }
-  },
-  "Material|2023-03-22T14:34:32.487Z|37691": {
-    "ƒ.Material": {
-      "name": "Knuckles",
-      "idResource": "Material|2023-03-22T14:34:32.487Z|37691",
-      "shader": "ShaderLitTextured",
-      "coat": {
-        "ƒ.CoatTextured": {
-          "color": "[1, 1, 1, 1]",
-          "idTexture": "TextureImage|2023-03-22T14:34:40.059Z|84037"
-        }
-      }
-    }
-  },
-  "TextureImage|2023-03-22T14:34:40.059Z|84037": {
-    "ƒ.TextureImage": {
-      "url": "images\\knuckles.png",
-      "type": "TextureImage",
-      "Texture": {
-        "idResource": "TextureImage|2023-03-22T14:34:40.059Z|84037",
-        "name": "images\\knuckles.png",
-        "mipmap": "CRISP"
-      }
-    }
-  },
-  "Material|2023-03-22T14:49:43.366Z|92097": {
-    "ƒ.Material": {
-      "name": "Flower",
-      "idResource": "Material|2023-03-22T14:49:43.366Z|92097",
-      "shader": "ShaderLitTextured",
-      "coat": {
-        "ƒ.CoatTextured": {
-          "color": "[1, 1, 1, 1]",
-          "idTexture": "TextureImage|2023-03-22T14:49:59.403Z|86181"
-        }
-      }
-    }
-  },
-  "TextureImage|2023-03-22T14:49:59.403Z|86181": {
-    "ƒ.TextureImage": {
-      "url": "images\\flower.png",
-      "type": "TextureImage",
-      "Texture": {
-        "idResource": "TextureImage|2023-03-22T14:49:59.403Z|86181",
-        "name": "images\\flower.png",
-        "mipmap": "CRISP"
-      }
+  "MeshSprite|2023-03-23T13:59:21.529Z|08126": {
+    "ƒ.MeshSprite": {
+      "idResource": "MeshSprite|2023-03-23T13:59:21.529Z|08126",
+      "name": "MeshSprite",
+      "type": "MeshSprite"
     }
   }
 }
