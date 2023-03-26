@@ -14,7 +14,7 @@ namespace Script {
     knuckles = graph.getChildrenByName("Charakter")[0].getChildrenByName("knuckles")[0];
     knuckles.addComponent(new ƒ.ComponentTransform(new ƒ.Matrix4x4));
     ƒ.Loop.addEventListener(ƒ.EVENT.LOOP_FRAME, update);
-    ƒ.Loop.start(ƒ.LOOP_MODE.TIME_GAME, 1);  // start the game loop to continously draw the viewport, update the audiosystem and drive the physics i/a
+    ƒ.Loop.start(ƒ.LOOP_MODE.TIME_GAME, 3);  // start the game loop to continously draw the viewport, update the audiosystem and drive the physics i/a
   }
 
   function update(_event: Event): void {
