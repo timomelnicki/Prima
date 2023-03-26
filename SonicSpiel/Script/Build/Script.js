@@ -39,18 +39,29 @@ var Script;
 var Script;
 (function (Script) {
     var ƒ = FudgeCore;
+    //import ƒAid = FudgeAid;
     ƒ.Debug.info("Main Program Template running!");
     let viewport;
+    let graph;
+    let knuckles;
     document.addEventListener("interactiveViewportStarted", start);
     function start(_event) {
         viewport = _event.detail;
+        graph = viewport.getBranch();
+        knuckles = graph.getChildrenByName("Charakter")[0].getChildrenByName("knuckles")[0];
+        knuckles.addComponent(new ƒ.ComponentTransform(new ƒ.Matrix4x4));
         ƒ.Loop.addEventListener("loopFrame" /* LOOP_FRAME */, update);
-        // ƒ.Loop.start();  // start the game loop to continously draw the viewport, update the audiosystem and drive the physics i/a
+        ƒ.Loop.start(ƒ.LOOP_MODE.TIME_GAME, 1); // start the game loop to continously draw the viewport, update the audiosystem and drive the physics i/a
     }
     function update(_event) {
         // ƒ.Physics.simulate();  // if physics is included and used
         viewport.draw();
         ƒ.AudioManager.default.update();
+        //let graph: ƒ.Node = viewport.getBranch();
+        //let knuckles: ƒ.Node = graph.getChildrenByName("Charakter")[0].getChildrenByName("knuckles")[0];
+        //console.log(graph.getChildrenByName("Charakter")[0].getChildrenByName("knuckles")[0]);
+        //knuckles.addComponent(new ƒ.ComponentTransform(new ƒ.Matrix4x4));
+        knuckles.mtxLocal.translateX(1);
     }
 })(Script || (Script = {}));
 //# sourceMappingURL=Script.js.map
