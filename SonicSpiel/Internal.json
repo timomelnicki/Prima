@@ -112,7 +112,33 @@
     "ƒ.Graph": {
       "name": "Szene",
       "active": true,
-      "components": {},
+      "components": {
+        "ComponentCamera": [
+          {
+            "ƒ.ComponentCamera": {
+              "backgroundColor": {
+                "r": 0,
+                "g": 0,
+                "b": 0,
+                "a": 1
+              },
+              "backgroundEnabled": true,
+              "projection": "central",
+              "fieldOfView": 45,
+              "direction": "diagonal",
+              "aspect": 1.761802575107296,
+              "pivot": {
+                "translation": "[0, 0, 18]",
+                "rotation": "[0, 180, 0]",
+                "scaling": "[1, 1, 1]"
+              },
+              "Component": {
+                "active": true
+              }
+            }
+          }
+        ]
+      },
       "children": [
         {
           "ƒ.Node": {

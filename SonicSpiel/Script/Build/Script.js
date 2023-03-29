@@ -50,6 +50,8 @@ var Script;
         graph = viewport.getBranch();
         knuckles = graph.getChildrenByName("Charakter")[0].getChildrenByName("knuckles")[0];
         knuckles.addComponent(new ƒ.ComponentTransform(new ƒ.Matrix4x4));
+        let cmpCamera = viewport.getBranch().getComponent(ƒ.ComponentCamera);
+        viewport.camera = cmpCamera;
         ƒ.Loop.addEventListener("loopFrame" /* LOOP_FRAME */, update);
         ƒ.Loop.start(ƒ.LOOP_MODE.TIME_GAME, 3); // start the game loop to continously draw the viewport, update the audiosystem and drive the physics i/a
     }
@@ -61,7 +63,16 @@ var Script;
         //let knuckles: ƒ.Node = graph.getChildrenByName("Charakter")[0].getChildrenByName("knuckles")[0];
         //console.log(graph.getChildrenByName("Charakter")[0].getChildrenByName("knuckles")[0]);
         //knuckles.addComponent(new ƒ.ComponentTransform(new ƒ.Matrix4x4));
-        knuckles.mtxLocal.translateX(1);
+        //knuckles.mtxLocal.translateX(1);
+        if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.ARROW_RIGHT, ƒ.KEYBOARD_CODE.D]))
+            knuckles.mtxLocal.translateX(0.1);
+        if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.ARROW_LEFT, ƒ.KEYBOARD_CODE.A]))
+            knuckles.mtxLocal.translateX(-0.1);
+        let pos = knuckles.mtxLocal.translation;
+        if (pos.y > -0.5)
+            knuckles.mtxLocal.translateY(-0.2);
+        else
+            knuckles.mtxLocal.translateY(+0.2);
     }
 })(Script || (Script = {}));
 //# sourceMappingURL=Script.js.map
