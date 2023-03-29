@@ -72,7 +72,7 @@ var Script;
         if (pos.y > -0.5)
             knuckles.mtxLocal.translateY(-0.2);
         else
-            knuckles.mtxLocal.translateY(+0.2);
+            knuckles.mtxLocal.translateY(+1);
     }
 })(Script || (Script = {}));
 //# sourceMappingURL=Script.js.map
