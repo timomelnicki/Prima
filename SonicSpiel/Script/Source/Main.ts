@@ -27,17 +27,21 @@ namespace Script {
     //let knuckles: ƒ.Node = graph.getChildrenByName("Charakter")[0].getChildrenByName("knuckles")[0];
     //console.log(graph.getChildrenByName("Charakter")[0].getChildrenByName("knuckles")[0]);
     //knuckles.addComponent(new ƒ.ComponentTransform(new ƒ.Matrix4x4));
-    //knuckles.mtxLocal.translateX(1);
+    //knuckles.mtxLocal.translateX(1);+
     if(ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.ARROW_RIGHT, ƒ.KEYBOARD_CODE.D]))
-      knuckles.mtxLocal.translateX(0.1);
+      knuckles.mtxLocal.translateX(0.33);
 
     if(ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.ARROW_LEFT, ƒ.KEYBOARD_CODE.A]))
-      knuckles.mtxLocal.translateX(-0.1);
+      knuckles.mtxLocal.translateX(-0.33);
 
     let pos: ƒ.Vector3 = knuckles.mtxLocal.translation;
-    if (pos.y > -0.5)
-      knuckles.mtxLocal.translateY(-0.2);
-    else
-      knuckles.mtxLocal.translateY(+1);
+    //if (pos.y > -0.5)
+      //knuckles.mtxLocal.translateY(-0.2);
+    //else
+      //knuckles.mtxLocal.translateY(+1);
+      if(ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.SPACE]))
+        knuckles.mtxLocal.translateY(+1);
+      if (pos.y > 0)
+        knuckles.mtxLocal.translateY(-0.3);
   }
 }
