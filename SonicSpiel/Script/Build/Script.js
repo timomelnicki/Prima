@@ -44,6 +44,9 @@ var Script;
     let viewport;
     let graph;
     let knuckles;
+    //let isGrounded: boolean = true;
+    //let gravity: number = 0.3;
+    //let ySpeed: number = 1;
     document.addEventListener("interactiveViewportStarted", start);
     function start(_event) {
         viewport = _event.detail;
@@ -53,10 +56,11 @@ var Script;
         let cmpCamera = viewport.getBranch().getComponent(ƒ.ComponentCamera);
         viewport.camera = cmpCamera;
         ƒ.Loop.addEventListener("loopFrame" /* ƒ.EVENT.LOOP_FRAME */, update);
-        ƒ.Loop.start(ƒ.LOOP_MODE.TIME_GAME, 3); // start the game loop to continously draw the viewport, update the audiosystem and drive the physics i/a
+        ƒ.Loop.start(ƒ.LOOP_MODE.TIME_GAME, 30); // start the game loop to continously draw the viewport, update the audiosystem and drive the physics i/a
     }
     function update(_event) {
         // ƒ.Physics.simulate();  // if physics is included and used
+        //ySpeed += gravity;
         viewport.draw();
         ƒ.AudioManager.default.update();
         //let graph: ƒ.Node = viewport.getBranch();
@@ -65,18 +69,21 @@ var Script;
         //knuckles.addComponent(new ƒ.ComponentTransform(new ƒ.Matrix4x4));
         //knuckles.mtxLocal.translateX(1);+
         if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.ARROW_RIGHT, ƒ.KEYBOARD_CODE.D]))
-            knuckles.mtxLocal.translateX(0.33);
+            knuckles.mtxLocal.translateX(0.1);
         if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.ARROW_LEFT, ƒ.KEYBOARD_CODE.A]))
-            knuckles.mtxLocal.translateX(-0.33);
+            knuckles.mtxLocal.translateX(-0.1);
         let pos = knuckles.mtxLocal.translation;
         //if (pos.y > -0.5)
         //knuckles.mtxLocal.translateY(-0.2);
         //else
         //knuckles.mtxLocal.translateY(+1);
-        if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.SPACE]))
+        if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.SPACE, ƒ.KEYBOARD_CODE.ARROW_UP]))
             knuckles.mtxLocal.translateY(+1);
+        //isGrounded = false;
         if (pos.y > 0)
             knuckles.mtxLocal.translateY(-0.3);
     }
 })(Script || (Script = {}));
+//mtxLocal.translation.y = 0 matrix translation an Y
+//mtxLocal.translation = V neuer Vektor
 //# sourceMappingURL=Script.js.map
