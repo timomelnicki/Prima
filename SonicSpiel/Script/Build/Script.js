@@ -64,7 +64,7 @@ var Script;
     function update(_event) {
         // ƒ.Physics.simulate();  // if physics is included and used
         //ySpeed += gravity;
-        viewport.draw();
+        //viewport.draw();
         ƒ.AudioManager.default.update();
         let timeFrame = ƒ.Loop.timeFrameGame / 1000; // time since last frame in seconds
         //let graph: ƒ.Node = viewport.getBranch();
@@ -88,6 +88,7 @@ var Script;
         if (isGrounded && ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.SPACE])) {
             ySpeed = 5;
             isGrounded = false;
+            collision();
         }
         ySpeed += gravity * timeFrame;
         let pos = knuckles.mtxLocal.translation;
@@ -99,6 +100,21 @@ var Script;
         }
         knuckles.mtxLocal.translation = pos;
         viewport.draw();
+    }
+    function collision() {
+        graph = viewport.getBranch();
+        let floors = graph.getChildrenByName("Boden")[0];
+        let pos = knuckles.mtxLocal.translation;
+        for (let floor of floors.getChildren()) {
+            let posFloor = floor.mtxLocal.translation;
+            if (Math.abs(pos.x - posFloor.x) < 0.5) {
+                if (pos.y < posFloor.y + 0.01) {
+                    pos.y = posFloor.y + 0.01;
+                    knuckles.mtxLocal.translation = pos;
+                    ySpeed = 0;
+                }
+            }
+        }
     }
 })(Script || (Script = {}));
 //mtxLocal.translation.y = 0 matrix translation an Y

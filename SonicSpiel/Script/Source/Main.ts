@@ -28,7 +28,7 @@ namespace Script {
   function update(_event: Event): void {
     // ƒ.Physics.simulate();  // if physics is included and used
     //ySpeed += gravity;
-    viewport.draw();
+    //viewport.draw();
     ƒ.AudioManager.default.update();
     let timeFrame: number = ƒ.Loop.timeFrameGame / 1000; // time since last frame in seconds
     //let graph: ƒ.Node = viewport.getBranch();
@@ -54,6 +54,8 @@ namespace Script {
       if (isGrounded && ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.SPACE])) {
         ySpeed = 5;
         isGrounded = false;
+
+      collision();
   }
   ySpeed += gravity * timeFrame;
     let pos: ƒ.Vector3 = knuckles.mtxLocal.translation;
@@ -65,6 +67,21 @@ namespace Script {
     }
     knuckles.mtxLocal.translation = pos;
     viewport.draw();
+  }
+  function collision():void{
+    graph = viewport.getBranch();
+    let floors: ƒ.Node = graph.getChildrenByName("Boden")[0];
+    let pos: ƒ.Vector3 = knuckles.mtxLocal.translation;
+    for (let floor of floors.getChildren()) {
+      let posFloor: ƒ.Vector3 = floor.mtxLocal.translation;
+      if (Math.abs(pos.x - posFloor.x) < 0.5) {
+        if (pos.y < posFloor.y + 0.01) {
+          pos.y = posFloor.y + 0.01;
+          knuckles.mtxLocal.translation = pos;
+          ySpeed = 0;
+        }
+      }
+    }
   }
 }
 
