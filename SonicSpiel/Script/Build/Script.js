@@ -44,7 +44,7 @@ var Script;
     let viewport;
     let graph;
     let knuckles;
-    let gravity = -9.81;
+    let gravity = -7.81;
     let ySpeed = 0;
     let isGrounded = true;
     //let isGrounded: boolean = true;
@@ -62,6 +62,7 @@ var Script;
         ƒ.Loop.start(); //(ƒ.LOOP_MODE.TIME_GAME, 30);  // start the game loop to continously draw the viewport, update the audiosystem and drive the physics i/a
     }
     function update(_event) {
+        collision();
         // ƒ.Physics.simulate();  // if physics is included and used
         //ySpeed += gravity;
         //viewport.draw();
@@ -85,10 +86,10 @@ var Script;
         //isGrounded = false;
         //if (pos.y > 0)
         //knuckles.mtxLocal.translateY(-0.3);
-        if (isGrounded && ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.SPACE])) {
+        if (isGrounded && ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.SPACE, ƒ.KEYBOARD_CODE.ARROW_UP, ƒ.KEYBOARD_CODE.W])) {
             ySpeed = 5;
             isGrounded = false;
-            collision();
+            //collision();
         }
         ySpeed += gravity * timeFrame;
         let pos = knuckles.mtxLocal.translation;
@@ -103,13 +104,13 @@ var Script;
     }
     function collision() {
         graph = viewport.getBranch();
-        let floors = graph.getChildrenByName("Boden")[0];
+        let floors = graph.getChildrenByName("Floor")[0];
         let pos = knuckles.mtxLocal.translation;
         for (let floor of floors.getChildren()) {
             let posFloor = floor.mtxLocal.translation;
             if (Math.abs(pos.x - posFloor.x) < 0.5) {
-                if (pos.y < posFloor.y + 0.01) {
-                    pos.y = posFloor.y + 0.01;
+                if (pos.y < posFloor.y + 0.5) {
+                    pos.y = posFloor.y + 0.5;
                     knuckles.mtxLocal.translation = pos;
                     ySpeed = 0;
                 }

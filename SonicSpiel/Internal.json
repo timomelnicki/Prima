@@ -328,7 +328,7 @@
         },
         {
           "ƒ.Node": {
-            "name": "Boden",
+            "name": "Floor",
             "active": true,
             "components": {},
             "children": [

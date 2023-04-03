@@ -6,7 +6,7 @@ namespace Script {
   let viewport: ƒ.Viewport;
   let graph: ƒ.Node;
   let knuckles: ƒ.Node; 
-  let gravity: number = -9.81;
+  let gravity: number = -7.81;
   let ySpeed: number = 0;
   let isGrounded: boolean = true;
   //let isGrounded: boolean = true;
@@ -23,9 +23,11 @@ namespace Script {
     viewport.camera = cmpCamera;
     ƒ.Loop.addEventListener(ƒ.EVENT.LOOP_FRAME, update);
     ƒ.Loop.start(); //(ƒ.LOOP_MODE.TIME_GAME, 30);  // start the game loop to continously draw the viewport, update the audiosystem and drive the physics i/a
+    
   }
 
   function update(_event: Event): void {
+    collision();
     // ƒ.Physics.simulate();  // if physics is included and used
     //ySpeed += gravity;
     //viewport.draw();
@@ -51,11 +53,11 @@ namespace Script {
         //isGrounded = false;
       //if (pos.y > 0)
         //knuckles.mtxLocal.translateY(-0.3);
-      if (isGrounded && ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.SPACE])) {
+      if (isGrounded && ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.SPACE, ƒ.KEYBOARD_CODE.ARROW_UP, ƒ.KEYBOARD_CODE.W])) {
         ySpeed = 5;
         isGrounded = false;
 
-      collision();
+      //collision();
   }
   ySpeed += gravity * timeFrame;
     let pos: ƒ.Vector3 = knuckles.mtxLocal.translation;
@@ -70,13 +72,13 @@ namespace Script {
   }
   function collision():void{
     graph = viewport.getBranch();
-    let floors: ƒ.Node = graph.getChildrenByName("Boden")[0];
+    let floors: ƒ.Node = graph.getChildrenByName("Floor")[0];
     let pos: ƒ.Vector3 = knuckles.mtxLocal.translation;
     for (let floor of floors.getChildren()) {
       let posFloor: ƒ.Vector3 = floor.mtxLocal.translation;
       if (Math.abs(pos.x - posFloor.x) < 0.5) {
-        if (pos.y < posFloor.y + 0.01) {
-          pos.y = posFloor.y + 0.01;
+        if (pos.y < posFloor.y + 0.5) {
+          pos.y = posFloor.y + 0.5;
           knuckles.mtxLocal.translation = pos;
           ySpeed = 0;
         }
