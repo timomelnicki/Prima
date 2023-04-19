@@ -39,18 +39,19 @@ namespace Script {
  
    }
  
-  //  let audioJump: ƒ.Audio;
-  //  let audioWalk: ƒ.Audio;
+  let audioJump: ƒ.Audio;
+  let audioDeath: ƒ.Audio;
  
-   // function initializeSounds(): void {
-   //   audioDeath = new ƒ.Audio("./sounds/super-mario-death-sound-sound-effect.wav");
-   //   audioJump = new ƒ.Audio("./sounds/maro-jump-sound-effect_1.wav");
-   // }
+   function initializeSounds(): void {
+     audioDeath = new ƒ.Audio("./sounds/death.wav");
+     audioJump = new ƒ.Audio("./sounds/jump.wav");
+     audioAtmo = new ƒ.Audio("./sounds/music.wav");
+   }
  
    //knucklesSprite
    let animationState: string = "standing";
    let knucklesAvatar: ƒAid.NodeSprite;
-  //  let cmpAudio: ƒ.ComponentAudio;
+   let cmpAudio: ƒ.ComponentAudio;
    
  
    async function knucklesNodeInit(_event: Event): Promise<void> {
@@ -59,7 +60,7 @@ namespace Script {
      let coat: ƒ.CoatTextured = new ƒ.CoatTextured(undefined, knucklesSpriteSheet);
  
      initAnimations(coat);
-     // initializeSounds();
+     initializeSounds();
  
      knucklesAvatar = new ƒAid.NodeSprite("knuckles_Sprite");
      knucklesAvatar.addComponent(new ƒ.ComponentTransform(new ƒ.Matrix4x4()));
@@ -77,12 +78,12 @@ namespace Script {
      graph = viewport.getBranch();
      graph.addChild(knucklesAvatar);
  
-     // cmpAudio = graph.getComponent(ƒ.ComponentAudio);
-     // cmpAudio.connect(true);
-     // cmpAudio.volume = 1;
+    cmpAudio = graph.getComponent(ƒ.ComponentAudio);
+    cmpAudio.connect(true);
+    cmpAudio.volume = 1;
    }
+
   function update(_event: Event): void {
-    
     knucklesAvatar.mtxLocal.rotation = ƒ.Vector3.Y(animationState.includes("left") ? 180 : 0);
     //collision();
     // ƒ.Physics.simulate();  // if physics is included and used
