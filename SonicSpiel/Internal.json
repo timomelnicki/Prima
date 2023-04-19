@@ -289,33 +289,15 @@
                     "ComponentMesh": [
                       {
                         "ƒ.ComponentMesh": {
-                          "idMesh": "MeshSprite|2023-03-23T13:59:21.529Z|08126",
+                          "idMesh": "MeshQuad|2023-03-22T14:15:43.367Z|55732",
                           "pivot": {
-                            "translation": "[0, -2.1700000762939453, 1]",
+                            "translation": "[0, 0, 1]",
                             "rotation": "[0, 0, 0]",
-                            "scaling": "[1.1200000047683716, 1.119999885559082, 0]"
+                            "scaling": "[1, 1, 1]"
                           },
                           "Component": {
                             "active": true
                           }
-                        }
-                      }
-                    ],
-                    "ComponentMaterial": [
-                      {
-                        "ƒ.ComponentMaterial": {
-                          "sortForAlpha": false,
-                          "clrPrimary": "[1, 1, 1, 1]",
-                          "clrSecondary": "[1, 1, 1, 1]",
-                          "pivot": {
-                            "translation": "[0, 0]",
-                            "rotation": 0,
-                            "scaling": "[1, 1]"
-                          },
-                          "Component": {
-                            "active": true
-                          },
-                          "idMaterial": "Material|2023-03-22T14:34:32.487Z|37691"
                         }
                       }
                     ]
