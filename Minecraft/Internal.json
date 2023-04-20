@@ -1,0 +1,85 @@
+{
+  "MeshCube|2023-04-20T13:16:26.488Z|80669": {
+    "ƒ.MeshCube": {
+      "idResource": "MeshCube|2023-04-20T13:16:26.488Z|80669",
+      "name": "MeshCube",
+      "type": "MeshCube"
+    }
+  },
+  "Material|2023-04-20T13:16:32.152Z|27507": {
+    "ƒ.Material": {
+      "name": "ShaderFlat",
+      "idResource": "Material|2023-04-20T13:16:32.152Z|27507",
+      "shader": "ShaderFlat",
+      "coat": {
+        "ƒ.CoatRemissive": {
+          "color": "[0.9607843137254902, 0.9607843137254902, 0.9607843137254902, 1]",
+          "diffuse": 1,
+          "specular": 0
+        }
+      }
+    }
+  },
+  "Graph|2023-04-20T13:17:26.222Z|97304": {
+    "ƒ.Graph": {
+      "name": "Cube",
+      "active": true,
+      "components": {
+        "ComponentMesh": [
+          {
+            "ƒ.ComponentMesh": {
+              "idMesh": "MeshCube|2023-04-20T13:16:26.488Z|80669",
+              "pivot": {
+                "translation": "[0, 0, 0]",
+                "rotation": "[0, 0, 0]",
+                "scaling": "[1, 1, 1]"
+              },
+              "Component": {
+                "active": true
+              }
+            }
+          }
+        ],
+        "ComponentMaterial": [
+          {
+            "ƒ.ComponentMaterial": {
+              "sortForAlpha": false,
+              "clrPrimary": "[0.8980392156862745, 0.043137254901960784, 0.043137254901960784, 1]",
+              "clrSecondary": "[1, 1, 1, 1]",
+              "pivot": {
+                "translation": "[0, 0]",
+                "rotation": 0,
+                "scaling": "[1, 1]"
+              },
+              "Component": {
+                "active": true
+              },
+              "idMaterial": "Material|2023-04-20T13:16:32.152Z|27507"
+            }
+          }
+        ]
+      },
+      "children": [],
+      "idResource": "Graph|2023-04-20T13:17:26.222Z|97304",
+      "type": "Graph"
+    }
+  },
+  "Graph|2023-04-20T13:20:15.371Z|85543": {
+    "ƒ.Graph": {
+      "name": "Game",
+      "active": true,
+      "components": {},
+      "children": [
+        {
+          "ƒ.GraphInstance": {
+            "deserializeFromSource": true,
+            "name": "Cube",
+            "idSource": "Graph|2023-04-20T13:17:26.222Z|97304"
+          }
+        }
+      ],
+      "idResource": "Graph|2023-04-20T13:20:15.371Z|85543",
+      "type": "Graph"
+    }
+  }
+}
