@@ -40,8 +40,9 @@ namespace Script {
       }
     }
   }
+  
+  function generate(i: number, pos: ƒ.Vector3): ƒ.Node {
+    throw new Error("Function not implemented.");
+  }
 }
 
-function generate(i: number, pos: ƒ.Vector3): ƒ.Node {
-  throw new Error("Function not implemented.");
-}

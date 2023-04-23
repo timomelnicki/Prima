@@ -20,50 +20,6 @@
       }
     }
   },
-  "Graph|2023-04-20T13:17:26.222Z|97304": {
-    "ƒ.Graph": {
-      "name": "CubeRed",
-      "active": true,
-      "components": {
-        "ComponentMesh": [
-          {
-            "ƒ.ComponentMesh": {
-              "idMesh": "MeshCube|2023-04-20T13:16:26.488Z|80669",
-              "pivot": {
-                "translation": "[0, 0, 0]",
-                "rotation": "[0, 0, 0]",
-                "scaling": "[1, 1, 1]"
-              },
-              "Component": {
-                "active": true
-              }
-            }
-          }
-        ],
-        "ComponentMaterial": [
-          {
-            "ƒ.ComponentMaterial": {
-              "sortForAlpha": false,
-              "clrPrimary": "[0.788235294117647, 0.11372549019607843, 0.11372549019607843, 1]",
-              "clrSecondary": "[1, 1, 1, 1]",
-              "pivot": {
-                "translation": "[0, 0]",
-                "rotation": 0,
-                "scaling": "[1, 1]"
-              },
-              "Component": {
-                "active": true
-              },
-              "idMaterial": "Material|2023-04-20T13:16:32.152Z|27507"
-            }
-          }
-        ]
-      },
-      "children": [],
-      "idResource": "Graph|2023-04-20T13:17:26.222Z|97304",
-      "type": "Graph"
-    }
-  },
   "Graph|2023-04-20T13:20:15.371Z|85543": {
     "ƒ.Graph": {
       "name": "Game",
