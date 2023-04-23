@@ -60,13 +60,13 @@ async function startInteractiveViewport(_graphId)/* : void */ {
 
   // setup audio
   let cmpListener/* : ƒ.ComponentAudioListener */ = new ƒ.ComponentAudioListener();
-  cmpCamera.node.addComponent(cmpListener);
+  graph.addComponent(cmpListener);
   ƒ.AudioManager.default.listenWith(cmpListener);
   ƒ.AudioManager.default.listenTo(graph);
   ƒ.Debug.log("Audio:", ƒ.AudioManager.default);
 
   // draw viewport once for immediate feedback
-  ƒ.Render.prepare(cameraOrbit);
+  ƒ.Render.prepare(graph);
   viewport.draw();
 
   // dispatch event to signal startup done

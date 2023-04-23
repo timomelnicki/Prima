@@ -71,24 +71,21 @@ var Script;
         knucklesJumpAnimation = new ƒAid.SpriteSheetAnimation("Jump", coat);
         knucklesJumpAnimation.generateByGrid(ƒ.Rectangle.GET(520, 324, 40, 45), 3, 50, ƒ.ORIGIN2D.BOTTOMCENTER, ƒ.Vector2.X(40));
     }
-    //let audioJump: ƒ.Audio;
-    //let audioDeath: ƒ.Audio;
-    //let audioAtmo: ƒ.Audio;
-    //  function initializeSounds(): void {
-    //    //audioDeath = new ƒ.Audio("./sounds/death.wav");
-    //    audioJump = new ƒ.Audio("./sounds/jump.wav");
-    //    audioAtmo = new ƒ.Audio("./sounds/music.wav");
-    //  }
+    let audioJump;
+    function initializeSounds() {
+        //audioDeath = new ƒ.Audio("./sounds/death.wav");
+        audioJump = new ƒ.Audio("./sounds/jump.wav");
+    }
     //knucklesSprite
     let animationState = "standing";
     let knucklesAvatar;
-    //let cmpAudio: ƒ.ComponentAudio;
+    let cmpAudio;
     async function knucklesNodeInit(_event) {
         let knucklesSpriteSheet = new ƒ.TextureImage();
         await knucklesSpriteSheet.load("./images/knucklesprite.png");
         let coat = new ƒ.CoatTextured(undefined, knucklesSpriteSheet);
         initAnimations(coat);
-        //initializeSounds();
+        initializeSounds();
         knucklesAvatar = new ƒAid.NodeSprite("knuckles_Sprite");
         knucklesAvatar.addComponent(new ƒ.ComponentTransform(new ƒ.Matrix4x4()));
         knucklesAvatar.setAnimation(knucklesWalkAnimation);
@@ -100,13 +97,13 @@ var Script;
         knucklesAvatar.mtxLocal.scaleY(2);
         graph = viewport.getBranch();
         graph.addChild(knucklesAvatar);
-        // cmpAudio = graph.getComponent(ƒ.ComponentAudio);
-        // cmpAudio.connect(true);
-        // cmpAudio.volume = 1;
+        cmpAudio = graph.getComponent(ƒ.ComponentAudio);
+        cmpAudio.connect(true);
+        cmpAudio.volume = 1;
     }
     function update(_event) {
         knucklesAvatar.mtxLocal.rotation = ƒ.Vector3.Y(animationState.includes("left") ? 180 : 0);
-        //collision();
+        collision();
         // ƒ.Physics.simulate();  // if physics is included and used
         //ySpeed += gravity;
         //viewport.draw();
@@ -150,7 +147,10 @@ var Script;
             ySpeed = 5;
             isGrounded = false;
             knucklesAvatar.setAnimation(knucklesJumpAnimation);
-            //collision();
+            cmpAudio.setAudio(audioJump);
+            cmpAudio.play(true);
+            cmpAudio.volume = 4;
+            collision();
         }
         ySpeed += gravity * timeFrame;
         let pos = knucklesAvatar.mtxLocal.translation;
@@ -188,21 +188,21 @@ var Script;
     //   viewport.camera.mtxPivot.mutate(
     //     { "translation": { "x": mutator.translation.x, "y": mutator.translation.y } }
     //   );
-    // function collision():void{
-    //   graph = viewport.getBranch();
-    //   let floors: ƒ.Node = graph.getChildrenByName("Floor")[0];
-    //   let pos: ƒ.Vector3 = knuckles.mtxLocal.translation;
-    //   for (let floor of floors.getChildren()) {
-    //     let posFloor: ƒ.Vector3 = floor.mtxLocal.translation;
-    //     if (Math.abs(pos.x - posFloor.x) < 0.5) {
-    //       if (pos.y < posFloor.y + 0.5) {
-    //         pos.y = posFloor.y + 0.5;
-    //         knuckles.mtxLocal.translation = pos;
-    //         ySpeed = 0;
-    //       }
-    //     }
-    //   }
-    // }
+    function collision() {
+        graph = viewport.getBranch();
+        let floors = graph.getChildrenByName("Floor")[0];
+        let pos = knuckles.mtxLocal.translation;
+        for (let floor of floors.getChildren()) {
+            let posFloor = floor.mtxLocal.translation;
+            if (Math.abs(pos.x - posFloor.x) < 0.5) {
+                if (pos.y < posFloor.y + 0.5) {
+                    pos.y = posFloor.y + 0.5;
+                    knuckles.mtxLocal.translation = pos;
+                    ySpeed = 0;
+                }
+            }
+        }
+    }
     //mtxLocal.translation.y = 0 matrix translation an Y
     //mtxLocal.translation = V neuer Vektor
 })(Script || (Script = {}));

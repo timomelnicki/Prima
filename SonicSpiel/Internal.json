@@ -137,6 +137,17 @@
               }
             }
           }
+        ],
+        "ComponentAudio": [
+          {
+            "ƒ.ComponentAudio": {
+              "active": true,
+              "idResource": "Audio|2023-04-19T19:37:58.758Z|28543",
+              "playing": true,
+              "loop": false,
+              "volume": 1
+            }
+          }
         ]
       },
       "children": [
@@ -1353,6 +1364,14 @@
       ],
       "idResource": "Graph|2023-03-22T14:15:18.647Z|32700",
       "type": "Graph"
+    }
+  },
+  "Audio|2023-04-19T19:37:58.758Z|28543": {
+    "ƒ.Audio": {
+      "url": "Sounds\\music.wav",
+      "idResource": "Audio|2023-04-19T19:37:58.758Z|28543",
+      "name": "Sounds\\music.wav",
+      "type": "Audio"
     }
   }
 }
