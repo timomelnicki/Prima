@@ -3,14 +3,22 @@ namespace Script {
   ƒ.Debug.info("Main Program Template running!");
 
   let viewport: ƒ.Viewport;
-  document.addEventListener("interactiveViewportStarted", <EventListener>start);
+  document.addEventListener("interactiveViewportStarted", <EventListener><unknown>start);
 
-  let cubeBlue: ƒ.Graph;
-  let world: ƒ.Graph;
 
-  function start(_event: CustomEvent): void {
+
+  async function start(_event: CustomEvent): Promise<void> {
     viewport = _event.detail;
-    generateWorld();
+
+    // let block: ƒ.Graph= <ƒ.Graph> ƒ.Project.resources["Graph|2023-04-23T13:10:15.212Z|78039"];
+    // let instance: ƒ.GraphInstance = await ƒ.Project.createGraphInstance(block);
+    // console.log(instance);
+    // instance.mtxLocal.translateX(1);
+
+    let instance: Block = new Block(ƒ.Vector3.X(1), ƒ.Color.CSS("red"));
+    viewport.getBranch().addChild(instance);
+
+    //generateWorld();
     ƒ.Loop.addEventListener(ƒ.EVENT.LOOP_FRAME, update);
     // ƒ.Loop.start();  // start the game loop to continously draw the viewport, update the audiosystem and drive the physics i/a
   }
@@ -21,28 +29,26 @@ namespace Script {
     ƒ.AudioManager.default.update();
   }
 
-  function generateWorld(){
-    let displacement: number = 1.01;
-    let index: number = 0;
-    let size: number = 5;
-    let cubes: ƒ.Node[] = new Array (size * size * size);
+  // function generateWorld(){
+  //   let instance: Block = new Block(ƒ.Vector3.X(0), ƒ.Color.CSS("red"))
+  //   viewport.getBranch().addChild(instance);
 
-    let transform: ƒ.Node = new ƒ.Node("transform");
-    transform.addComponent(new ƒ.ComponentTransform());
-    transform.mtxLocal.translation = pos;
+  //   let size: number = 3
+  //   //let index: number = 9
 
-    for (let x: number = 0; x < size; x++){
-      for(let y: number = 0; y < size; y++){
-        for(let z: number = 0; z < size; z++){
-          cubes[index] = generate(index, new ƒ.Vector3(x*displacement, y*displacement, z*displacement));
-          index++;
-        }
-      }
-    }
-  }
+
+  //   for (let x: number = 0; x < size; x++){
+  //     for(let y: number = 0; y < size; y++){
+  //       for(let z: number = 0; z < size; z++){
+  //         let instance: Block = new Block(ƒ.Vector3.X(x), ƒ.Color.CSS("red"))
+  //         viewport.getBranch().addChild(instance);
+  //       }
+  //     }
+  //   }
+  // }
   
-  function generate(i: number, pos: ƒ.Vector3): ƒ.Node {
-    throw new Error("Function not implemented.");
-  }
+  // function generate(i: number, pos: ƒ.Vector3): ƒ.Node {
+  //   throw new Error("Function not implemented.");
+  // }
 }
 

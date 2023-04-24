@@ -2,6 +2,23 @@
 var Script;
 (function (Script) {
     var ƒ = FudgeCore;
+    class Block extends ƒ.Node {
+        static mshcube = new ƒ.MeshCube("Block");
+        static mtrcube = new ƒ.Material("Block", ƒ.ShaderFlat, new ƒ.CoatRemissive);
+        constructor(_position, _color) {
+            super("Block");
+            this.addComponent(new ƒ.ComponentTransform());
+            this.addComponent(new ƒ.ComponentMesh(Block.mshcube));
+            let cmpMaterial = new ƒ.ComponentMaterial(Block.mtrcube);
+            cmpMaterial.clrPrimary = _color;
+            this.addComponent(new ƒ.ComponentMaterial(Block.mtrcube));
+        }
+    }
+    Script.Block = Block;
+})(Script || (Script = {}));
+var Script;
+(function (Script) {
+    var ƒ = FudgeCore;
     ƒ.Project.registerScriptNamespace(Script); // Register the namespace to FUDGE for serialization
     class CustomComponentScript extends ƒ.ComponentScript {
         // Register the script as component for use in the editor via drag&drop
@@ -42,8 +59,15 @@ var Script;
     ƒ.Debug.info("Main Program Template running!");
     let viewport;
     document.addEventListener("interactiveViewportStarted", start);
-    function start(_event) {
+    async function start(_event) {
         viewport = _event.detail;
+        // let block: ƒ.Graph= <ƒ.Graph> ƒ.Project.resources["Graph|2023-04-23T13:10:15.212Z|78039"];
+        // let instance: ƒ.GraphInstance = await ƒ.Project.createGraphInstance(block);
+        // console.log(instance);
+        // instance.mtxLocal.translateX(1);
+        let instance = new Script.Block(ƒ.Vector3.X(1), ƒ.Color.CSS("red"));
+        viewport.getBranch().addChild(instance);
+        //generateWorld();
         ƒ.Loop.addEventListener("loopFrame" /* ƒ.EVENT.LOOP_FRAME */, update);
         // ƒ.Loop.start();  // start the game loop to continously draw the viewport, update the audiosystem and drive the physics i/a
     }
@@ -52,5 +76,22 @@ var Script;
         viewport.draw();
         ƒ.AudioManager.default.update();
     }
+    // function generateWorld(){
+    //   let instance: Block = new Block(ƒ.Vector3.X(0), ƒ.Color.CSS("red"))
+    //   viewport.getBranch().addChild(instance);
+    //   let size: number = 3
+    //   //let index: number = 9
+    //   for (let x: number = 0; x < size; x++){
+    //     for(let y: number = 0; y < size; y++){
+    //       for(let z: number = 0; z < size; z++){
+    //         let instance: Block = new Block(ƒ.Vector3.X(x), ƒ.Color.CSS("red"))
+    //         viewport.getBranch().addChild(instance);
+    //       }
+    //     }
+    //   }
+    // }
+    // function generate(i: number, pos: ƒ.Vector3): ƒ.Node {
+    //   throw new Error("Function not implemented.");
+    // }
 })(Script || (Script = {}));
 //# sourceMappingURL=Script.js.map
