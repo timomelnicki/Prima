@@ -22,8 +22,20 @@ namespace Script {
     }
 
     viewport.canvas.addEventListener("mousedown", pick);
-    viewport.getBranch().addEventListener("mousedown", <ƒ.EventListenerUnified>hit);
-    
+    //viewport.getBranch().addEventListener("mousedown", <ƒ.EventListenerUnified>hit);
+    function pick(){
+      
+      let cameraMtxWorld: ƒ.Matrix4x4 = viewport.camera.mtxWorld;
+      let hitScann: ƒ.Ray = new ƒ.Ray();
+      hitScann.transform(cameraMtxWorld);
+      hitScann.getDistance(new ƒ.Vector3);
+      console.log(hitScann.getDistance(new ƒ.Vector3));
+      
+    }
+
+
+
+
     ƒ.Loop.addEventListener(ƒ.EVENT.LOOP_FRAME, update);
     ƒ.Loop.start();  // start the game loop to continously draw the viewport, update the audiosystem and drive the physics i/a
   }
@@ -34,17 +46,17 @@ namespace Script {
     ƒ.AudioManager.default.update();
   }
 
-  function pick(_event: MouseEvent): void {
-    console.log("pick")
-    viewport.dispatchPointerEvent(<PointerEvent>_event);
-  }
+  // function pick(_event: MouseEvent): void {
+  //   console.log("pick")
+  //   viewport.dispatchPointerEvent(<PointerEvent>_event);
+  // }
 
-  function hit(_event: PointerEvent): void {
-    let node: ƒ.Node = (<ƒ.Node>_event.target);
-    let cmpPick: ƒ.ComponentPick = node.getComponent(ƒ.ComponentPick);
+  // function hit(_event: PointerEvent): void {
+  //   let node: ƒ.Node = (<ƒ.Node>_event.target);
+  //   let cmpPick: ƒ.ComponentPick = node.getComponent(ƒ.ComponentPick);
 
-    console.log(cmpPick);
-  }
+  //   console.log(cmpPick);
+  // }
   // function generateWorld(){
   //   let instance: Block = new Block(ƒ.Vector3.X(0), ƒ.Color.CSS("red"))
   //   viewport.getBranch().addChild(instance);

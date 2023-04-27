@@ -77,7 +77,14 @@ var Script;
             }
         }
         viewport.canvas.addEventListener("mousedown", pick);
-        viewport.getBranch().addEventListener("mousedown", hit);
+        //viewport.getBranch().addEventListener("mousedown", <ƒ.EventListenerUnified>hit);
+        function pick() {
+            let cameraMtxWorld = viewport.camera.mtxWorld;
+            let hitScann = new ƒ.Ray();
+            hitScann.transform(cameraMtxWorld);
+            hitScann.getDistance(new ƒ.Vector3);
+            console.log(hitScann.getDistance(new ƒ.Vector3));
+        }
         ƒ.Loop.addEventListener("loopFrame" /* ƒ.EVENT.LOOP_FRAME */, update);
         ƒ.Loop.start(); // start the game loop to continously draw the viewport, update the audiosystem and drive the physics i/a
     }
@@ -86,15 +93,15 @@ var Script;
         viewport.draw();
         ƒ.AudioManager.default.update();
     }
-    function pick(_event) {
-        console.log("pick");
-        viewport.dispatchPointerEvent(_event);
-    }
-    function hit(_event) {
-        let node = _event.target;
-        let cmpPick = node.getComponent(ƒ.ComponentPick);
-        console.log(cmpPick);
-    }
+    // function pick(_event: MouseEvent): void {
+    //   console.log("pick")
+    //   viewport.dispatchPointerEvent(<PointerEvent>_event);
+    // }
+    // function hit(_event: PointerEvent): void {
+    //   let node: ƒ.Node = (<ƒ.Node>_event.target);
+    //   let cmpPick: ƒ.ComponentPick = node.getComponent(ƒ.ComponentPick);
+    //   console.log(cmpPick);
+    // }
     // function generateWorld(){
     //   let instance: Block = new Block(ƒ.Vector3.X(0), ƒ.Color.CSS("red"))
     //   viewport.getBranch().addChild(instance);
