@@ -11,11 +11,15 @@ namespace Script {
 
             let cmpMaterial: ƒ.ComponentMaterial = new ƒ.ComponentMaterial(Block.mtrcube);
             cmpMaterial.clrPrimary = _color;
-            this.addComponent(new ƒ.ComponentMaterial(Block.mtrcube));
+            this.addComponent(cmpMaterial);
 
             // this.addComponent(new ƒ.ComponentTransform());
             let cmpTransform: ƒ.ComponentTransform = new ƒ.ComponentTransform(ƒ.Matrix4x4.TRANSLATION(_position));
             this.addComponent(cmpTransform);
+
+            let cmpPick: ƒ.ComponentPick = new ƒ.ComponentPick;
+            cmpPick.pick = ƒ.PICK.RADIUS;
+            this.addComponent(cmpPick)
         }
     }
 }
