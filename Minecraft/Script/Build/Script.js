@@ -3,24 +3,42 @@ var Script;
 (function (Script) {
     var ƒ = FudgeCore;
     class Block extends ƒ.Node {
-        static mshcube = new ƒ.MeshCube("Block");
-        static mtrcube = new ƒ.Material("Block", ƒ.ShaderFlat, new ƒ.CoatRemissive);
+        static mshCube = new ƒ.MeshCube("Block");
+        static mtrCube = new ƒ.Material("Block", ƒ.ShaderFlat, new ƒ.CoatRemissive());
         constructor(_position, _color) {
             super("Block");
-            this.addComponent(new ƒ.ComponentMesh(Block.mshcube));
-            let cmpMaterial = new ƒ.ComponentMaterial(Block.mtrcube);
+            this.addComponent(new ƒ.ComponentMesh(Block.mshCube));
+            let cmpMaterial = new ƒ.ComponentMaterial(Block.mtrCube);
             cmpMaterial.clrPrimary = _color;
             this.addComponent(cmpMaterial);
-            // this.addComponent(new ƒ.ComponentTransform());
-            let cmpTransform = new ƒ.ComponentTransform(ƒ.Matrix4x4.TRANSLATION(_position));
-            this.addComponent(cmpTransform);
-            let cmpPick = new ƒ.ComponentPick;
-            cmpPick.pick = ƒ.PICK.RADIUS;
+            this.addComponent(new ƒ.ComponentTransform(ƒ.Matrix4x4.TRANSLATION(_position)));
+            let cmpPick = new ƒ.ComponentPick();
+            cmpPick.pick = ƒ.PICK.CAMERA;
             this.addComponent(cmpPick);
         }
     }
     Script.Block = Block;
 })(Script || (Script = {}));
+// namespace Script {
+//     import ƒ = FudgeCore;
+//     export class Block extends ƒ.Node{
+//         static mshcube: ƒ.MeshCube = new ƒ.MeshCube("Block");
+//         static mtrcube: ƒ.Material = new ƒ.Material("Block", ƒ.ShaderFlat, new ƒ.CoatRemissive);
+//         constructor(_position: ƒ.Vector3, _color: ƒ.Color){
+//             super("Block");
+//             this.addComponent(new ƒ.ComponentMesh(Block.mshcube));
+//             let cmpMaterial: ƒ.ComponentMaterial = new ƒ.ComponentMaterial(Block.mtrcube);
+//             cmpMaterial.clrPrimary = _color;
+//             this.addComponent(cmpMaterial);
+//             // this.addComponent(new ƒ.ComponentTransform());
+//             let cmpTransform: ƒ.ComponentTransform = new ƒ.ComponentTransform(ƒ.Matrix4x4.TRANSLATION(_position));
+//             this.addComponent(cmpTransform);
+//             let cmpPick: ƒ.ComponentPick = new ƒ.ComponentPick;
+//             cmpPick.pick = ƒ.PICK.RADIUS;
+//             this.addComponent(cmpPick)
+//         }
+//     }
+// }
 var Script;
 (function (Script) {
     var ƒ = FudgeCore;
@@ -62,36 +80,61 @@ var Script;
 (function (Script) {
     var ƒ = FudgeCore;
     ƒ.Debug.info("Main Program Template running!");
-    let viewport;
+    Script.grid = [];
     document.addEventListener("interactiveViewportStarted", start);
     async function start(_event) {
-        viewport = _event.detail;
-        let size = 3;
-        for (let x = 0; x < size; x++) {
-            for (let y = 0; y < size; y++) {
-                for (let z = 0; z < size; z++) {
-                    let instance = new Script.Block(new ƒ.Vector3(x, y, z), ƒ.Color.CSS("green"));
-                    viewport.getBranch().addChild(instance);
-                    console.log(instance);
-                }
-            }
-        }
-        viewport.canvas.addEventListener("mousedown", pick);
+        Script.viewport = _event.detail;
+        generateWorld(9, 5, 9);
+        let pickAlgorithm = [Script.pickByComponent, Script.pickByCamera, Script.pickByRadius, Script.pickByGrid];
+        Script.viewport.canvas.addEventListener("pointerdown", pickAlgorithm[1]);
+        Script.viewport.getBranch().addEventListener("pointerdown", Script.hitComponent);
+        // let size: number = 9;
+        // for (let x: number = 0; x < size; x++){
+        //   for(let y: number = 0; y < size; y++){
+        //     for(let z: number = 0; z < size; z++){
+        //       let instance: Block = new Block(new ƒ.Vector3(x, y, z), ƒ.Color.CSS("green"));
+        //       viewport.getBranch().addChild(instance);
+        //       console.log(instance);
+        //     }
+        //   }
+        // }
+        //viewport.canvas.addEventListener("mousedown", pick);
         //viewport.getBranch().addEventListener("mousedown", <ƒ.EventListenerUnified>hit);
-        function pick() {
-            let cameraMtxWorld = viewport.camera.mtxWorld;
-            let hitScann = new ƒ.Ray();
-            hitScann.transform(cameraMtxWorld);
-            hitScann.getDistance(new ƒ.Vector3);
-            console.log(hitScann.getDistance(new ƒ.Vector3));
-        }
+        // function pick(){
+        //   let cameraMtxWorld: ƒ.Matrix4x4 = viewport.camera.mtxWorld;
+        //   let hitScann: ƒ.Ray = new ƒ.Ray();
+        //   hitScann.transform(cameraMtxWorld);
+        //   hitScann.getDistance(new ƒ.Vector3);
+        //   console.log(hitScann.getDistance(new ƒ.Vector3));
+        // }
         ƒ.Loop.addEventListener("loopFrame" /* ƒ.EVENT.LOOP_FRAME */, update);
         ƒ.Loop.start(); // start the game loop to continously draw the viewport, update the audiosystem and drive the physics i/a
     }
     function update(_event) {
         // ƒ.Physics.simulate();  // if physics is included and used
-        viewport.draw();
+        Script.viewport.draw();
         ƒ.AudioManager.default.update();
+    }
+    function generateWorld(_width, _height, _depth) {
+        Script.blocks = new ƒ.Node("Blocks");
+        Script.viewport.getBranch().addChild(Script.blocks);
+        // let vctOffset: ƒ.Vector2 = new ƒ.Vector2(Math.floor(_width / 2), Math.floor(_depth / 2));
+        let vctOffset = ƒ.Vector2.ZERO();
+        for (let y = 0; y < _height; y++) {
+            Script.grid[y] = [];
+            for (let z = 0; z < _depth; z++) {
+                Script.grid[y][z] = [];
+                for (let x = 0; x < _width; x++) {
+                    let vctPostion = new ƒ.Vector3(x - vctOffset.x, y, z - vctOffset.y);
+                    let txtColor = ƒ.Random.default.getElement(["red", "lime", "blue", "yellow"]);
+                    let block = new Script.Block(vctPostion, ƒ.Color.CSS(txtColor));
+                    block.name = vctPostion.toString() + "|" + txtColor;
+                    Script.blocks.addChild(block);
+                    Script.grid[y][z][x] = block;
+                }
+            }
+        }
+        console.log(Script.grid);
     }
     // function pick(_event: MouseEvent): void {
     //   console.log("pick")
@@ -108,5 +151,94 @@ var Script;
     // function generate(i: number, pos: ƒ.Vector3): ƒ.Node {
     //   throw new Error("Function not implemented.");
     // }
+})(Script || (Script = {}));
+var Script;
+(function (Script) {
+    var ƒ = FudgeCore;
+    function pickByComponent(_event) {
+        console.log("pickByComponent");
+        Reflect.set(_event, "closestDistance", Infinity);
+        Reflect.set(_event, "closestBlock", null);
+        Script.viewport.dispatchPointerEvent(_event);
+        hitBlock(Reflect.get(_event, "closestBlock"));
+    }
+    Script.pickByComponent = pickByComponent;
+    function hitComponent(_event) {
+        let block = _event.target;
+        let closestDistance = Reflect.get(_event, "closestDistance");
+        let pick = Reflect.get(_event, "pick");
+        if (pick.zBuffer < closestDistance) {
+            Reflect.set(_event, "closestDistance", pick.zBuffer);
+            Reflect.set(_event, "closestBlock", block);
+        }
+    }
+    Script.hitComponent = hitComponent;
+    function pickByCamera(_event) {
+        console.log("pickCamera");
+        let picks = ƒ.Picker.pickViewport(Script.viewport, new ƒ.Vector2(_event.clientX, _event.clientY));
+        picks.sort((_a, _b) => _a.zBuffer < _b.zBuffer ? -1 : 1);
+        console.log(picks[0]);
+        if (_event.button == 0) {
+            hitBlock(picks[0]?.node);
+        }
+        else if (_event.button == 2) {
+            let posNewBlock = console.log(picks[0].normal.toString());
+            addBlock();
+        }
+    }
+    Script.pickByCamera = pickByCamera;
+    function pickByRadius(_event) {
+        console.log("pickByRay");
+        let ray = Script.viewport.getRayFromClient(new ƒ.Vector2(_event.clientX, _event.clientY));
+        let shortest;
+        let found = null;
+        let compare = Math.pow(0.7, 2);
+        for (let block of Script.blocks.getChildren()) {
+            if (compare < ray.getDistance(block.mtxWorld.translation).magnitudeSquared)
+                continue;
+            let distance = ƒ.Vector3.DIFFERENCE(block.mtxWorld.translation, ray.origin).magnitudeSquared;
+            if (shortest == undefined || distance < shortest) {
+                shortest = distance;
+                found = block;
+            }
+        }
+        hitBlock(found);
+    }
+    Script.pickByRadius = pickByRadius;
+    function pickByGrid(_event) {
+        console.log("pickByGrid");
+        let ray = Script.viewport.getRayFromClient(new ƒ.Vector2(_event.clientX, _event.clientY));
+        let posCheck = ray.origin.clone;
+        let vctStep = ray.direction.clone;
+        // find largest component value
+        let largest = vctStep.get().reduce((_p, _c) => Math.max(_p, Math.abs(_c)));
+        // normalize to 1 in that direction
+        vctStep.scale(1 / largest);
+        for (let i = 0; i < 100; i++) {
+            posCheck.add(vctStep);
+            let posGrid = posCheck.map(_value => Math.round(_value));
+            console.log(posGrid.toString(), posCheck.toString());
+            try {
+                let block = Script.grid[posGrid.y][posGrid.z][posGrid.x];
+                if (block) {
+                    hitBlock(block);
+                    return;
+                }
+            }
+            catch (_e) { }
+        }
+    }
+    Script.pickByGrid = pickByGrid;
+    function hitBlock(_block) {
+        if (!_block)
+            return;
+        console.log(_block.name);
+        _block.getParent().removeChild(_block);
+        Script.viewport.draw();
+    }
+    function addBlock(_pos) {
+        let txtColor = ƒ.Random.default.getElement(["red", "lime", "blue", "yellow"]);
+        Script.blocks.addChild(new Script.Block(_pos, ƒ.Color.CSS(txtColor)));
+    }
 })(Script || (Script = {}));
 //# sourceMappingURL=Script.js.map
