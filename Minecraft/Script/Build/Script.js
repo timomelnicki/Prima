@@ -87,7 +87,9 @@ var Script;
     async function start(_event) {
         Script.viewport = _event.detail;
         Script.viewport.physicsDebugMode = ƒ.PHYSICS_DEBUGMODE.COLLIDERS;
-        generateWorld(3, 3, 3);
+        let camera = Script.viewport.getBranch().getChildrenByName("steve")[0].getComponent(ƒ.ComponentCamera);
+        Script.viewport.camera = camera;
+        generateWorld(9, 3, 9);
         let pickAlgorithm = [Script.pickByComponent, Script.pickByCamera, Script.pickByRadius, Script.pickByGrid];
         Script.viewport.canvas.addEventListener("pointerdown", pickAlgorithm[1]);
         Script.viewport.getBranch().addEventListener("pointerdown", Script.hitComponent);
@@ -117,6 +119,11 @@ var Script;
         ƒ.Physics.simulate(); // if physics is included and used
         Script.viewport.draw();
         ƒ.AudioManager.default.update();
+        let steve;
+        let cmpRigidbody = steve.getComponent(ƒ.ComponentRigidbody);
+        cmpRigidbody.applyForce(ƒ.Vector3.Z(1));
+        cmpRigidbody.
+        ;
     }
     function generateWorld(_width, _height, _depth) {
         Script.blocks = new ƒ.Node("Blocks");

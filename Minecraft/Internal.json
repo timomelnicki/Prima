@@ -88,7 +88,7 @@
                     "initialization": "TO_PIVOT",
                     "friction": 0.2,
                     "restitution": 0.2,
-                    "mass": 1,
+                    "mass": 70,
                     "dampTranslation": 0.1,
                     "dampRotation": 0.1,
                     "effectGravity": 1,
@@ -98,6 +98,64 @@
                     "id": 1,
                     "pivot": {
                       "translation": "[0, 0, 0]",
+                      "rotation": "[0, 0, 0]",
+                      "scaling": "[1, 1, 1]"
+                    },
+                    "Component": {
+                      "active": true
+                    }
+                  }
+                }
+              ],
+              "ComponentMesh": [
+                {
+                  "ƒ.ComponentMesh": {
+                    "idMesh": "MeshPyramid|2023-05-08T14:08:13.461Z|46762",
+                    "pivot": {
+                      "translation": "[0, -0.6000000238418579, 0]",
+                      "rotation": "[0, -0.009999999776482582, 0]",
+                      "scaling": "[1, 1.2000000476837158, 1]"
+                    },
+                    "Component": {
+                      "active": true
+                    }
+                  }
+                }
+              ],
+              "ComponentMaterial": [
+                {
+                  "ƒ.ComponentMaterial": {
+                    "sortForAlpha": false,
+                    "clrPrimary": "[1, 1, 1, 1]",
+                    "clrSecondary": "[1, 1, 1, 1]",
+                    "pivot": {
+                      "translation": "[0, 0]",
+                      "rotation": 0,
+                      "scaling": "[1, 1]"
+                    },
+                    "Component": {
+                      "active": true
+                    },
+                    "idMaterial": "Material|2023-04-20T13:16:32.152Z|27507"
+                  }
+                }
+              ],
+              "ComponentCamera": [
+                {
+                  "ƒ.ComponentCamera": {
+                    "backgroundColor": {
+                      "r": 0,
+                      "g": 0,
+                      "b": 0,
+                      "a": 1
+                    },
+                    "backgroundEnabled": true,
+                    "projection": "central",
+                    "fieldOfView": 45,
+                    "direction": "diagonal",
+                    "aspect": 1,
+                    "pivot": {
+                      "translation": "[0, 0, -2.5]",
                       "rotation": "[0, 0, 0]",
                       "scaling": "[1, 1, 1]"
                     },

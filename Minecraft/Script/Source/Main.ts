@@ -12,8 +12,10 @@ namespace Script {
   async function start(_event: CustomEvent): Promise<void> {
     viewport = _event.detail;
     viewport.physicsDebugMode = ƒ.PHYSICS_DEBUGMODE.COLLIDERS;
+    let camera: ƒ.ComponentCamera = viewport.getBranch().getChildrenByName("steve")[0].getComponent(ƒ.ComponentCamera);
+    viewport.camera = camera;
 
-    generateWorld(3, 3, 3);
+    generateWorld(9, 3, 9);
 
     let pickAlgorithm = [pickByComponent, pickByCamera, pickByRadius, pickByGrid];
     
@@ -53,6 +55,11 @@ namespace Script {
     ƒ.Physics.simulate();  // if physics is included and used
     viewport.draw();
     ƒ.AudioManager.default.update();
+    
+    let steve:  ;
+    let cmpRigidbody: ƒ.ComponentRigidbody = steve.getComponent(ƒ.ComponentRigidbody);
+    cmpRigidbody.applyForce(ƒ.Vector3.Z(1));
+    cmpRigidbody.
   }
 
   function generateWorld(_width: number, _height: number, _depth: number): void {
