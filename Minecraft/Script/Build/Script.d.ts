@@ -22,6 +22,15 @@ declare namespace Script {
     let grid: Block[][][];
 }
 declare namespace Script {
+    import ƒ = FudgeCore;
+    class Physics extends ƒ.ComponentScript {
+        static readonly iSubclass: number;
+        constructor();
+        hndEvent: (_event: Event) => void;
+        update: (_event: Event) => void;
+    }
+}
+declare namespace Script {
     function pickByComponent(_event: PointerEvent): void;
     function hitComponent(_event: PointerEvent): void;
     function pickByCamera(_event: PointerEvent): void;

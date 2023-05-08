@@ -28,11 +28,11 @@ namespace Script {
       if(_event.button == 0){
         hitBlock(picks[0]?.node);
       }
-      else if(_event.button == 2){
-        let posNewBlock: ƒ.Vector3 = 
-        console.log(picks[0].normal.toString());
-        addBlock();
-      }
+      // else if(_event.button == 2){
+      //   let posNewBlock: ƒ.Vector3 = 
+      //   console.log(picks[0].normal.toString());
+      //   addBlock();
+      // }
     }
   
     export function pickByRadius(_event: PointerEvent): void {
@@ -88,8 +88,8 @@ namespace Script {
       viewport.draw();
     }
 
-    function addBlock(_pos: ƒ.Vector3){
-        let txtColor: string = ƒ.Random.default.getElement(["red", "lime", "blue", "yellow"]);
-        blocks.addChild(new Block(_pos, ƒ.Color.CSS(txtColor)));
-    }
+    // function addBlock(_pos: ƒ.Vector3){
+    //     let txtColor: string = ƒ.Random.default.getElement(["red", "lime", "blue", "yellow"]);
+    //     blocks.addChild(new Block(_pos, ƒ.Color.CSS(txtColor)));
+    // }
   }

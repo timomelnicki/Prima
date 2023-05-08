@@ -1,7 +1,7 @@
 namespace Script {
   import ƒ = FudgeCore;
   ƒ.Debug.info("Main Program Template running!");
-
+  
   export let viewport: ƒ.Viewport;
   export let blocks: ƒ.Node
   export let grid: Block[][][] = [];
@@ -12,7 +12,7 @@ namespace Script {
   async function start(_event: CustomEvent): Promise<void> {
     viewport = _event.detail;
     
-    generateWorld(9, 5, 9);
+    generateWorld(3, 3, 3);
 
     let pickAlgorithm = [pickByComponent, pickByCamera, pickByRadius, pickByGrid];
     

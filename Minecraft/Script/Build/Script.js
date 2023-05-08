@@ -3,8 +3,6 @@ var Script;
 (function (Script) {
     var ƒ = FudgeCore;
     class Block extends ƒ.Node {
-        static mshCube = new ƒ.MeshCube("Block");
-        static mtrCube = new ƒ.Material("Block", ƒ.ShaderFlat, new ƒ.CoatRemissive());
         constructor(_position, _color) {
             super("Block");
             this.addComponent(new ƒ.ComponentMesh(Block.mshCube));
@@ -17,6 +15,8 @@ var Script;
             this.addComponent(cmpPick);
         }
     }
+    Block.mshCube = new ƒ.MeshCube("Block");
+    Block.mtrCube = new ƒ.Material("Block", ƒ.ShaderFlat, new ƒ.CoatRemissive());
     Script.Block = Block;
 })(Script || (Script = {}));
 // namespace Script {
@@ -44,36 +44,36 @@ var Script;
     var ƒ = FudgeCore;
     ƒ.Project.registerScriptNamespace(Script); // Register the namespace to FUDGE for serialization
     class CustomComponentScript extends ƒ.ComponentScript {
-        // Register the script as component for use in the editor via drag&drop
-        static iSubclass = ƒ.Component.registerSubclass(CustomComponentScript);
-        // Properties may be mutated by users in the editor via the automatically created user interface
-        message = "CustomComponentScript added to ";
         constructor() {
             super();
+            // Properties may be mutated by users in the editor via the automatically created user interface
+            this.message = "CustomComponentScript added to ";
+            // Activate the functions of this component as response to events
+            this.hndEvent = (_event) => {
+                switch (_event.type) {
+                    case "componentAdd" /* COMPONENT_ADD */:
+                        ƒ.Debug.log(this.message, this.node);
+                        break;
+                    case "componentRemove" /* COMPONENT_REMOVE */:
+                        this.removeEventListener("componentAdd" /* COMPONENT_ADD */, this.hndEvent);
+                        this.removeEventListener("componentRemove" /* COMPONENT_REMOVE */, this.hndEvent);
+                        break;
+                    case "nodeDeserialized" /* NODE_DESERIALIZED */:
+                        // if deserialized the node is now fully reconstructed and access to all its components and children is possible
+                        break;
+                }
+            };
             // Don't start when running in editor
             if (ƒ.Project.mode == ƒ.MODE.EDITOR)
                 return;
             // Listen to this component being added to or removed from a node
-            this.addEventListener("componentAdd" /* ƒ.EVENT.COMPONENT_ADD */, this.hndEvent);
-            this.addEventListener("componentRemove" /* ƒ.EVENT.COMPONENT_REMOVE */, this.hndEvent);
-            this.addEventListener("nodeDeserialized" /* ƒ.EVENT.NODE_DESERIALIZED */, this.hndEvent);
+            this.addEventListener("componentAdd" /* COMPONENT_ADD */, this.hndEvent);
+            this.addEventListener("componentRemove" /* COMPONENT_REMOVE */, this.hndEvent);
+            this.addEventListener("nodeDeserialized" /* NODE_DESERIALIZED */, this.hndEvent);
         }
-        // Activate the functions of this component as response to events
-        hndEvent = (_event) => {
-            switch (_event.type) {
-                case "componentAdd" /* ƒ.EVENT.COMPONENT_ADD */:
-                    ƒ.Debug.log(this.message, this.node);
-                    break;
-                case "componentRemove" /* ƒ.EVENT.COMPONENT_REMOVE */:
-                    this.removeEventListener("componentAdd" /* ƒ.EVENT.COMPONENT_ADD */, this.hndEvent);
-                    this.removeEventListener("componentRemove" /* ƒ.EVENT.COMPONENT_REMOVE */, this.hndEvent);
-                    break;
-                case "nodeDeserialized" /* ƒ.EVENT.NODE_DESERIALIZED */:
-                    // if deserialized the node is now fully reconstructed and access to all its components and children is possible
-                    break;
-            }
-        };
     }
+    // Register the script as component for use in the editor via drag&drop
+    CustomComponentScript.iSubclass = ƒ.Component.registerSubclass(CustomComponentScript);
     Script.CustomComponentScript = CustomComponentScript;
 })(Script || (Script = {}));
 var Script;
@@ -84,7 +84,7 @@ var Script;
     document.addEventListener("interactiveViewportStarted", start);
     async function start(_event) {
         Script.viewport = _event.detail;
-        generateWorld(9, 5, 9);
+        generateWorld(3, 3, 3);
         let pickAlgorithm = [Script.pickByComponent, Script.pickByCamera, Script.pickByRadius, Script.pickByGrid];
         Script.viewport.canvas.addEventListener("pointerdown", pickAlgorithm[1]);
         Script.viewport.getBranch().addEventListener("pointerdown", Script.hitComponent);
@@ -107,7 +107,7 @@ var Script;
         //   hitScann.getDistance(new ƒ.Vector3);
         //   console.log(hitScann.getDistance(new ƒ.Vector3));
         // }
-        ƒ.Loop.addEventListener("loopFrame" /* ƒ.EVENT.LOOP_FRAME */, update);
+        ƒ.Loop.addEventListener("loopFrame" /* LOOP_FRAME */, update);
         ƒ.Loop.start(); // start the game loop to continously draw the viewport, update the audiosystem and drive the physics i/a
     }
     function update(_event) {
@@ -155,6 +155,47 @@ var Script;
 var Script;
 (function (Script) {
     var ƒ = FudgeCore;
+    ƒ.Project.registerScriptNamespace(Script); // Register the namespace to FUDGE for serialization
+    class Physics extends ƒ.ComponentScript {
+        // Properties may be mutated by users in the editor via the automatically created user interface
+        // public message: string = "CustomComponentScript added to ";
+        constructor() {
+            super();
+            // Activate the functions of this component as response to events
+            this.hndEvent = (_event) => {
+                switch (_event.type) {
+                    case "componentAdd" /* COMPONENT_ADD */:
+                        this.node.addEventListener("renderPrepare" /* RENDER_PREPARE */, this.update);
+                        break;
+                    case "componentRemove" /* COMPONENT_REMOVE */:
+                        this.removeEventListener("componentAdd" /* COMPONENT_ADD */, this.hndEvent);
+                        this.removeEventListener("componentRemove" /* COMPONENT_REMOVE */, this.hndEvent);
+                        break;
+                    case "nodeDeserialized" /* NODE_DESERIALIZED */:
+                        // if deserialized the node is now fully reconstructed and access to all its components and children is possible
+                        break;
+                }
+            };
+            this.update = (_event) => {
+                let rigidBody = this.node.getComponent(ƒ.ComponentRigidbody);
+                rigidBody.applyTorque(ƒ.Vector3.Y(0));
+            };
+            // Don't start when running in editor
+            if (ƒ.Project.mode == ƒ.MODE.EDITOR)
+                return;
+            // Listen to this component being added to or removed from a node
+            this.addEventListener("componentAdd" /* COMPONENT_ADD */, this.hndEvent);
+            this.addEventListener("componentRemove" /* COMPONENT_REMOVE */, this.hndEvent);
+            this.addEventListener("nodeDeserialized" /* NODE_DESERIALIZED */, this.hndEvent);
+        }
+    }
+    // Register the script as component for use in the editor via drag&drop
+    Physics.iSubclass = ƒ.Component.registerSubclass(Physics);
+    Script.Physics = Physics;
+})(Script || (Script = {}));
+var Script;
+(function (Script) {
+    var ƒ = FudgeCore;
     function pickByComponent(_event) {
         console.log("pickByComponent");
         Reflect.set(_event, "closestDistance", Infinity);
@@ -181,10 +222,11 @@ var Script;
         if (_event.button == 0) {
             hitBlock(picks[0]?.node);
         }
-        else if (_event.button == 2) {
-            let posNewBlock = console.log(picks[0].normal.toString());
-            addBlock();
-        }
+        // else if(_event.button == 2){
+        //   let posNewBlock: ƒ.Vector3 = 
+        //   console.log(picks[0].normal.toString());
+        //   addBlock();
+        // }
     }
     Script.pickByCamera = pickByCamera;
     function pickByRadius(_event) {
@@ -236,9 +278,9 @@ var Script;
         _block.getParent().removeChild(_block);
         Script.viewport.draw();
     }
-    function addBlock(_pos) {
-        let txtColor = ƒ.Random.default.getElement(["red", "lime", "blue", "yellow"]);
-        Script.blocks.addChild(new Script.Block(_pos, ƒ.Color.CSS(txtColor)));
-    }
+    // function addBlock(_pos: ƒ.Vector3){
+    //     let txtColor: string = ƒ.Random.default.getElement(["red", "lime", "blue", "yellow"]);
+    //     blocks.addChild(new Block(_pos, ƒ.Color.CSS(txtColor)));
+    // }
 })(Script || (Script = {}));
 //# sourceMappingURL=Script.js.map
