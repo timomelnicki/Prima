@@ -13,7 +13,7 @@
       "shader": "ShaderFlat",
       "coat": {
         "ƒ.CoatRemissive": {
-          "color": "[0.9607843137254902, 0.9607843137254902, 0.9607843137254902, 1]",
+          "color": "[0.6666666666666666, 0.23137254901960785, 0.8705882352941177, 1]",
           "diffuse": 1,
           "specular": 0
         }
@@ -106,7 +106,15 @@
           }
         ]
       },
-      "children": [],
+      "children": [
+        {
+          "ƒ.GraphInstance": {
+            "deserializeFromSource": true,
+            "name": "Game",
+            "idSource": "Graph|2023-04-20T13:20:15.371Z|85543"
+          }
+        }
+      ],
       "idResource": "Graph|2023-04-23T13:08:31.605Z|72144",
       "type": "Graph"
     }
@@ -152,6 +160,103 @@
       },
       "children": [],
       "idResource": "Graph|2023-04-23T13:10:15.212Z|78039",
+      "type": "Graph"
+    }
+  },
+  "MeshPyramid|2023-05-08T14:08:13.461Z|46762": {
+    "ƒ.MeshPyramid": {
+      "idResource": "MeshPyramid|2023-05-08T14:08:13.461Z|46762",
+      "name": "MeshPyramid",
+      "type": "MeshPyramid"
+    }
+  },
+  "Graph|2023-05-08T14:09:21.866Z|09080": {
+    "ƒ.Graph": {
+      "name": "pyramid",
+      "active": true,
+      "components": {
+        "ComponentMesh": [
+          {
+            "ƒ.ComponentMesh": {
+              "idMesh": "MeshPyramid|2023-05-08T14:08:13.461Z|46762",
+              "pivot": {
+                "translation": "[0, 0, 0]",
+                "rotation": "[0, 0, 0]",
+                "scaling": "[1, 1, 1]"
+              },
+              "Component": {
+                "active": true
+              }
+            }
+          }
+        ],
+        "Physics": [
+          {
+            "Script.Physics": {
+              "active": true
+            }
+          }
+        ],
+        "ComponentTransform": [
+          {
+            "ƒ.ComponentTransform": {
+              "local": {
+                "translation": "[0, 0, 0]",
+                "rotation": "[0, 0, 0]",
+                "scaling": "[1, 1, 1]"
+              },
+              "Component": {
+                "active": true
+              }
+            }
+          }
+        ],
+        "ComponentRigidbody": [
+          {
+            "ƒ.ComponentRigidbody": {
+              "initialization": "TO_PIVOT",
+              "friction": 0.2,
+              "restitution": 0.2,
+              "mass": 1,
+              "dampTranslation": 0.1,
+              "dampRotation": 0.1,
+              "effectGravity": 1,
+              "typeBody": "DYNAMIC",
+              "typeCollider": "PYRAMID",
+              "isTrigger": false,
+              "id": 0,
+              "pivot": {
+                "translation": "[0, 0, 0]",
+                "rotation": "[0, 0, 0]",
+                "scaling": "[1, 1, 1]"
+              },
+              "Component": {
+                "active": true
+              }
+            }
+          }
+        ],
+        "ComponentMaterial": [
+          {
+            "ƒ.ComponentMaterial": {
+              "sortForAlpha": false,
+              "clrPrimary": "[1, 1, 1, 1]",
+              "clrSecondary": "[1, 1, 1, 1]",
+              "pivot": {
+                "translation": "[0, 0]",
+                "rotation": 0,
+                "scaling": "[1, 1]"
+              },
+              "Component": {
+                "active": true
+              },
+              "idMaterial": "Material|2023-04-20T13:16:32.152Z|27507"
+            }
+          }
+        ]
+      },
+      "children": [],
+      "idResource": "Graph|2023-05-08T14:09:21.866Z|09080",
       "type": "Graph"
     }
   }

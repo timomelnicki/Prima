@@ -11,7 +11,8 @@ namespace Script {
 
   async function start(_event: CustomEvent): Promise<void> {
     viewport = _event.detail;
-    
+    viewport.physicsDebugMode = ƒ.PHYSICS_DEBUGMODE.COLLIDERS;
+
     generateWorld(3, 3, 3);
 
     let pickAlgorithm = [pickByComponent, pickByCamera, pickByRadius, pickByGrid];
