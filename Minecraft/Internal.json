@@ -62,7 +62,56 @@
           }
         ]
       },
-      "children": [],
+      "children": [
+        {
+          "ƒ.Node": {
+            "name": "steve",
+            "active": true,
+            "components": {
+              "ComponentTransform": [
+                {
+                  "ƒ.ComponentTransform": {
+                    "local": {
+                      "translation": "[0, 5, 0]",
+                      "rotation": "[0, 0, 0]",
+                      "scaling": "[0.5, 1, 1]"
+                    },
+                    "Component": {
+                      "active": true
+                    }
+                  }
+                }
+              ],
+              "ComponentRigidbody": [
+                {
+                  "ƒ.ComponentRigidbody": {
+                    "initialization": "TO_PIVOT",
+                    "friction": 0.2,
+                    "restitution": 0.2,
+                    "mass": 1,
+                    "dampTranslation": 0.1,
+                    "dampRotation": 0.1,
+                    "effectGravity": 1,
+                    "typeBody": "DYNAMIC",
+                    "typeCollider": "CAPSULE",
+                    "isTrigger": false,
+                    "id": 1,
+                    "pivot": {
+                      "translation": "[0, 0, 0]",
+                      "rotation": "[0, 0, 0]",
+                      "scaling": "[1, 1, 1]"
+                    },
+                    "Component": {
+                      "active": true
+                    }
+                  }
+                }
+              ]
+            },
+            "children": []
+          }
+        }
+      ],
       "idResource": "Graph|2023-04-20T13:20:15.371Z|85543",
       "type": "Graph"
     }
@@ -168,96 +217,6 @@
       "idResource": "MeshPyramid|2023-05-08T14:08:13.461Z|46762",
       "name": "MeshPyramid",
       "type": "MeshPyramid"
-    }
-  },
-  "Graph|2023-05-08T14:09:21.866Z|09080": {
-    "ƒ.Graph": {
-      "name": "pyramid",
-      "active": true,
-      "components": {
-        "ComponentMesh": [
-          {
-            "ƒ.ComponentMesh": {
-              "idMesh": "MeshPyramid|2023-05-08T14:08:13.461Z|46762",
-              "pivot": {
-                "translation": "[0, 0, 0]",
-                "rotation": "[0, 0, 0]",
-                "scaling": "[1, 1, 1]"
-              },
-              "Component": {
-                "active": true
-              }
-            }
-          }
-        ],
-        "Physics": [
-          {
-            "Script.Physics": {
-              "active": true
-            }
-          }
-        ],
-        "ComponentTransform": [
-          {
-            "ƒ.ComponentTransform": {
-              "local": {
-                "translation": "[0, 0, 0]",
-                "rotation": "[0, 0, 0]",
-                "scaling": "[1, 1, 1]"
-              },
-              "Component": {
-                "active": true
-              }
-            }
-          }
-        ],
-        "ComponentRigidbody": [
-          {
-            "ƒ.ComponentRigidbody": {
-              "initialization": "TO_PIVOT",
-              "friction": 0.2,
-              "restitution": 0.2,
-              "mass": 1,
-              "dampTranslation": 0.1,
-              "dampRotation": 0.1,
-              "effectGravity": 1,
-              "typeBody": "DYNAMIC",
-              "typeCollider": "PYRAMID",
-              "isTrigger": false,
-              "id": 0,
-              "pivot": {
-                "translation": "[0, 0, 0]",
-                "rotation": "[0, 0, 0]",
-                "scaling": "[1, 1, 1]"
-              },
-              "Component": {
-                "active": true
-              }
-            }
-          }
-        ],
-        "ComponentMaterial": [
-          {
-            "ƒ.ComponentMaterial": {
-              "sortForAlpha": false,
-              "clrPrimary": "[1, 1, 1, 1]",
-              "clrSecondary": "[1, 1, 1, 1]",
-              "pivot": {
-                "translation": "[0, 0]",
-                "rotation": 0,
-                "scaling": "[1, 1]"
-              },
-              "Component": {
-                "active": true
-              },
-              "idMaterial": "Material|2023-04-20T13:16:32.152Z|27507"
-            }
-          }
-        ]
-      },
-      "children": [],
-      "idResource": "Graph|2023-05-08T14:09:21.866Z|09080",
-      "type": "Graph"
     }
   }
 }
