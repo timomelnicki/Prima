@@ -5,6 +5,8 @@ namespace Script {
   export let viewport: ƒ.Viewport;
   export let blocks: ƒ.Node
   export let grid: Block[][][] = [];
+  // let steve: ƒ.Node;
+  let rigidbodySteve: ƒ.ComponentRigidbody;
   document.addEventListener("interactiveViewportStarted", <EventListener><unknown>start);
 
 
@@ -14,6 +16,13 @@ namespace Script {
     viewport.physicsDebugMode = ƒ.PHYSICS_DEBUGMODE.COLLIDERS;
     let camera: ƒ.ComponentCamera = viewport.getBranch().getChildrenByName("steve")[0].getComponent(ƒ.ComponentCamera);
     viewport.camera = camera;
+
+    // steve = viewport.getBranch().getChildrenByName("steve")[0];
+    // rigidbodySteve = steve.getComponent(ƒ.ComponentRigidbody);
+    // rigidbodySteve.effectRotation = ƒ.Vector3.Y();
+    // ƒ.Physics.settings.sleepingAngularVelocityThreshold = 0.1;
+    // let cmpCamera: ƒ.ComponentCamera = steve.getComponent(ƒ.ComponentCamera);
+    // viewport.camera = cmpCamera;
 
     generateWorld(9, 3, 9);
 
@@ -55,11 +64,23 @@ namespace Script {
     ƒ.Physics.simulate();  // if physics is included and used
     viewport.draw();
     ƒ.AudioManager.default.update();
-    
-    let steve:  ;
-    let cmpRigidbody: ƒ.ComponentRigidbody = steve.getComponent(ƒ.ComponentRigidbody);
-    cmpRigidbody.applyForce(ƒ.Vector3.Z(1));
-    cmpRigidbody.
+
+
+    if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.W, ƒ.KEYBOARD_CODE.ARROW_UP])) {
+      rigidbodySteve.applyForce(ƒ.Vector3.SCALE(rigidbodySteve.node.mtxWorld.getZ(), 2600 ));
+    }
+    if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.S, ƒ.KEYBOARD_CODE.ARROW_DOWN])) {
+      rigidbodySteve.applyForce(ƒ.Vector3.SCALE(rigidbodySteve.node.mtxWorld.getZ(), -2600));
+    }
+    if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.A, ƒ.KEYBOARD_CODE.ARROW_LEFT])) {
+      rigidbodySteve.applyTorque(ƒ.Vector3.Y(12));
+    }
+    if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.D, ƒ.KEYBOARD_CODE.ARROW_RIGHT])) {
+      rigidbodySteve.applyTorque(ƒ.Vector3.Y(-12));
+    }
+    if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.SPACE, ƒ.KEYBOARD_CODE.ARROW_UP]) && rigidbodySteve.getVelocity().y == 0) {
+      rigidbodySteve.addVelocity(ƒ.Vector3.Y(5));
+    }
   }
 
   function generateWorld(_width: number, _height: number, _depth: number): void {
