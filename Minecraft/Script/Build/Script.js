@@ -139,7 +139,7 @@ var Script;
     function steveColliedes(_event) {
         // let colissionVector: ƒ.Vector3 = ƒ.Vector3.DIFFERENCE(_event.collisionPoint, steve.mtxWorld.translation);
         isGrounded = true;
-        let customEvent = new CustomEvent("steveCollieded", { bubbles: true, detail: steve.mtxWorld.translation });
+        let customEvent = new CustomEvent(MINECRAFT.STEVE_COLLIDES, { bubbles: true, detail: steve.mtxWorld.translation });
         steve.dispatchEvent(customEvent);
     }
     function generateWorld(_width, _height, _depth) {

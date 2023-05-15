@@ -53,7 +53,7 @@ namespace Script {
     rigidbodySteve = steve.getComponent(ƒ.ComponentRigidbody);
     rigidbodySteve.effectRotation = ƒ.Vector3.Y();
     ƒ.Physics.settings.sleepingAngularVelocityThreshold = 0.1;
-    rigidbodySteve.addEventListener(ƒ.EVENT_PHYSICS.COLLISION_ENTER, steveColliedes)
+    rigidbodySteve.addEventListener(ƒ.EVENT_PHYSICS.COLLISION_ENTER, steveColliedes);
 
   }
   
@@ -82,7 +82,7 @@ namespace Script {
 
     // let colissionVector: ƒ.Vector3 = ƒ.Vector3.DIFFERENCE(_event.collisionPoint, steve.mtxWorld.translation);
     isGrounded = true;
-    let customEvent: CustomEvent = new CustomEvent("steveCollieded", {bubbles: true, detail: steve.mtxWorld.translation});
+    let customEvent: CustomEvent = new CustomEvent(MINECRAFT.STEVE_COLLIDES, {bubbles: true, detail: steve.mtxWorld.translation});
     steve.dispatchEvent(customEvent);
   }
 
