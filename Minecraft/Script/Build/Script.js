@@ -3,6 +3,8 @@ var Script;
 (function (Script) {
     var ƒ = FudgeCore;
     class Block extends ƒ.Node {
+        static mshCube = new ƒ.MeshCube("Block");
+        static mtrCube = new ƒ.Material("Block", ƒ.ShaderFlat, new ƒ.CoatRemissive());
         constructor(_position, _color) {
             super("Block");
             this.addComponent(new ƒ.ComponentMesh(Block.mshCube));
@@ -17,8 +19,6 @@ var Script;
             this.addComponent(cmpRigidbody);
         }
     }
-    Block.mshCube = new ƒ.MeshCube("Block");
-    Block.mtrCube = new ƒ.Material("Block", ƒ.ShaderFlat, new ƒ.CoatRemissive());
     Script.Block = Block;
 })(Script || (Script = {}));
 // namespace Script {
@@ -46,36 +46,36 @@ var Script;
     var ƒ = FudgeCore;
     ƒ.Project.registerScriptNamespace(Script); // Register the namespace to FUDGE for serialization
     class CustomComponentScript extends ƒ.ComponentScript {
+        // Register the script as component for use in the editor via drag&drop
+        static iSubclass = ƒ.Component.registerSubclass(CustomComponentScript);
+        // Properties may be mutated by users in the editor via the automatically created user interface
+        message = "CustomComponentScript added to ";
         constructor() {
             super();
-            // Properties may be mutated by users in the editor via the automatically created user interface
-            this.message = "CustomComponentScript added to ";
-            // Activate the functions of this component as response to events
-            this.hndEvent = (_event) => {
-                switch (_event.type) {
-                    case "componentAdd" /* COMPONENT_ADD */:
-                        ƒ.Debug.log(this.message, this.node);
-                        break;
-                    case "componentRemove" /* COMPONENT_REMOVE */:
-                        this.removeEventListener("componentAdd" /* COMPONENT_ADD */, this.hndEvent);
-                        this.removeEventListener("componentRemove" /* COMPONENT_REMOVE */, this.hndEvent);
-                        break;
-                    case "nodeDeserialized" /* NODE_DESERIALIZED */:
-                        // if deserialized the node is now fully reconstructed and access to all its components and children is possible
-                        break;
-                }
-            };
             // Don't start when running in editor
             if (ƒ.Project.mode == ƒ.MODE.EDITOR)
                 return;
             // Listen to this component being added to or removed from a node
-            this.addEventListener("componentAdd" /* COMPONENT_ADD */, this.hndEvent);
-            this.addEventListener("componentRemove" /* COMPONENT_REMOVE */, this.hndEvent);
-            this.addEventListener("nodeDeserialized" /* NODE_DESERIALIZED */, this.hndEvent);
+            this.addEventListener("componentAdd" /* ƒ.EVENT.COMPONENT_ADD */, this.hndEvent);
+            this.addEventListener("componentRemove" /* ƒ.EVENT.COMPONENT_REMOVE */, this.hndEvent);
+            this.addEventListener("nodeDeserialized" /* ƒ.EVENT.NODE_DESERIALIZED */, this.hndEvent);
         }
+        // Activate the functions of this component as response to events
+        hndEvent = (_event) => {
+            switch (_event.type) {
+                case "componentAdd" /* ƒ.EVENT.COMPONENT_ADD */:
+                    ƒ.Debug.log(this.message, this.node);
+                    break;
+                case "componentRemove" /* ƒ.EVENT.COMPONENT_REMOVE */:
+                    this.removeEventListener("componentAdd" /* ƒ.EVENT.COMPONENT_ADD */, this.hndEvent);
+                    this.removeEventListener("componentRemove" /* ƒ.EVENT.COMPONENT_REMOVE */, this.hndEvent);
+                    break;
+                case "nodeDeserialized" /* ƒ.EVENT.NODE_DESERIALIZED */:
+                    // if deserialized the node is now fully reconstructed and access to all its components and children is possible
+                    break;
+            }
+        };
     }
-    // Register the script as component for use in the editor via drag&drop
-    CustomComponentScript.iSubclass = ƒ.Component.registerSubclass(CustomComponentScript);
     Script.CustomComponentScript = CustomComponentScript;
 })(Script || (Script = {}));
 var Script;
@@ -85,45 +85,40 @@ var Script;
     Script.grid = [];
     let steve;
     let rigidbodySteve;
+    let isGrounded = false;
+    let MINECRAFT;
+    (function (MINECRAFT) {
+        MINECRAFT["STEVE_COLLIDES"] = "steveColliedes";
+    })(MINECRAFT || (MINECRAFT = {}));
     document.addEventListener("interactiveViewportStarted", start);
     async function start(_event) {
         Script.viewport = _event.detail;
         Script.viewport.physicsDebugMode = ƒ.PHYSICS_DEBUGMODE.COLLIDERS;
-        let camera = Script.viewport.getBranch().getChildrenByName("steve")[0].getComponent(ƒ.ComponentCamera);
-        Script.viewport.camera = camera;
-        steve = Script.viewport.getBranch().getChildrenByName("steve")[0];
-        rigidbodySteve = steve.getComponent(ƒ.ComponentRigidbody);
-        rigidbodySteve.effectRotation = ƒ.Vector3.Y();
+        setUpSteve();
         generateWorld(9, 3, 9);
         let pickAlgorithm = [Script.pickByComponent, Script.pickByCamera, Script.pickByRadius, Script.pickByGrid];
         Script.viewport.canvas.addEventListener("pointerdown", pickAlgorithm[1]);
         Script.viewport.getBranch().addEventListener("pointerdown", Script.hitComponent);
-        // let size: number = 9;
-        // for (let x: number = 0; x < size; x++){
-        //   for(let y: number = 0; y < size; y++){
-        //     for(let z: number = 0; z < size; z++){
-        //       let instance: Block = new Block(new ƒ.Vector3(x, y, z), ƒ.Color.CSS("green"));
-        //       viewport.getBranch().addChild(instance);
-        //       console.log(instance);
-        //     }
-        //   }
-        // }
-        //viewport.canvas.addEventListener("mousedown", pick);
-        //viewport.getBranch().addEventListener("mousedown", <ƒ.EventListenerUnified>hit);
-        // function pick(){
-        //   let cameraMtxWorld: ƒ.Matrix4x4 = viewport.camera.mtxWorld;
-        //   let hitScann: ƒ.Ray = new ƒ.Ray();
-        //   hitScann.transform(cameraMtxWorld);
-        //   hitScann.getDistance(new ƒ.Vector3);
-        //   console.log(hitScann.getDistance(new ƒ.Vector3));
-        // }
-        ƒ.Loop.addEventListener("loopFrame" /* LOOP_FRAME */, update);
+        Script.viewport.getBranch().addEventListener(MINECRAFT.STEVE_COLLIDES, (_event) => console.log(_event));
+        ƒ.Loop.addEventListener("loopFrame" /* ƒ.EVENT.LOOP_FRAME */, update);
         ƒ.Loop.start(); // start the game loop to continously draw the viewport, update the audiosystem and drive the physics i/a
     }
     function update(_event) {
         ƒ.Physics.simulate(); // if physics is included and used
         Script.viewport.draw();
         ƒ.AudioManager.default.update();
+        steveControlles();
+    }
+    function setUpSteve() {
+        let camera = Script.viewport.getBranch().getChildrenByName("steve")[0].getComponent(ƒ.ComponentCamera);
+        Script.viewport.camera = camera;
+        steve = Script.viewport.getBranch().getChildrenByName("steve")[0];
+        rigidbodySteve = steve.getComponent(ƒ.ComponentRigidbody);
+        rigidbodySteve.effectRotation = ƒ.Vector3.Y();
+        ƒ.Physics.settings.sleepingAngularVelocityThreshold = 0.1;
+        rigidbodySteve.addEventListener("ColliderEnteredCollision" /* ƒ.EVENT_PHYSICS.COLLISION_ENTER */, steveColliedes);
+    }
+    function steveControlles() {
         if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.W, ƒ.KEYBOARD_CODE.ARROW_UP])) {
             rigidbodySteve.applyForce(ƒ.Vector3.SCALE(rigidbodySteve.node.mtxWorld.getZ(), 2600));
         }
@@ -136,9 +131,16 @@ var Script;
         if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.D, ƒ.KEYBOARD_CODE.ARROW_RIGHT])) {
             rigidbodySteve.applyTorque(ƒ.Vector3.Y(-12));
         }
-        if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.SPACE, ƒ.KEYBOARD_CODE.ARROW_UP]) && rigidbodySteve.getVelocity().y == 0) {
+        if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.SPACE, ƒ.KEYBOARD_CODE.ARROW_UP]) && isGrounded) {
             rigidbodySteve.addVelocity(ƒ.Vector3.Y(5));
+            isGrounded = false;
         }
+    }
+    function steveColliedes(_event) {
+        // let colissionVector: ƒ.Vector3 = ƒ.Vector3.DIFFERENCE(_event.collisionPoint, steve.mtxWorld.translation);
+        isGrounded = true;
+        let customEvent = new CustomEvent("steveCollieded", { bubbles: true, detail: steve.mtxWorld.translation });
+        steve.dispatchEvent(customEvent);
     }
     function generateWorld(_width, _height, _depth) {
         Script.blocks = new ƒ.Node("Blocks");
@@ -150,7 +152,7 @@ var Script;
             for (let z = 0; z < _depth; z++) {
                 Script.grid[y][z] = [];
                 for (let x = 0; x < _width; x++) {
-                    let vctPostion = new ƒ.Vector3(x - vctOffset.x, y, z - vctOffset.y);
+                    let vctPostion = new ƒ.Vector3(x - vctOffset.x, y + Math.random() * 0.1, z - vctOffset.y);
                     let txtColor = ƒ.Random.default.getElement(["red", "lime", "blue", "yellow"]);
                     let block = new Script.Block(vctPostion, ƒ.Color.CSS(txtColor));
                     block.name = vctPostion.toString() + "|" + txtColor;
@@ -161,21 +163,6 @@ var Script;
         }
         console.log(Script.grid);
     }
-    // function pick(_event: MouseEvent): void {
-    //   console.log("pick")
-    //   viewport.dispatchPointerEvent(<PointerEvent>_event);
-    // }
-    // function hit(_event: PointerEvent): void {
-    //   let node: ƒ.Node = (<ƒ.Node>_event.target);
-    //   let cmpPick: ƒ.ComponentPick = node.getComponent(ƒ.ComponentPick);
-    //   console.log(cmpPick);
-    // }
-    // function generateWorld(){
-    //   let instance: Block = new Block(ƒ.Vector3.X(0), ƒ.Color.CSS("red"))
-    //   viewport.getBranch().addChild(instance);
-    // function generate(i: number, pos: ƒ.Vector3): ƒ.Node {
-    //   throw new Error("Function not implemented.");
-    // }
 })(Script || (Script = {}));
 var Script;
 (function (Script) {
