@@ -5,24 +5,20 @@ namespace Script {
   export let viewport: ƒ.Viewport;
   export let blocks: ƒ.Node
   export let grid: Block[][][] = [];
-  // let steve: ƒ.Node;
+  let steve: ƒ.Node;
   let rigidbodySteve: ƒ.ComponentRigidbody;
   document.addEventListener("interactiveViewportStarted", <EventListener><unknown>start);
 
 
 
   async function start(_event: CustomEvent): Promise<void> {
+    steve = viewport.getBranch().getChildrenByName("Steve")[0];
+    rigidbodySteve = steve.getComponent(ƒ.ComponentRigidbody);
+    rigidbodySteve.effectRotation = ƒ.Vector3.Y();
     viewport = _event.detail;
     viewport.physicsDebugMode = ƒ.PHYSICS_DEBUGMODE.COLLIDERS;
     let camera: ƒ.ComponentCamera = viewport.getBranch().getChildrenByName("steve")[0].getComponent(ƒ.ComponentCamera);
     viewport.camera = camera;
-
-    // steve = viewport.getBranch().getChildrenByName("steve")[0];
-    // rigidbodySteve = steve.getComponent(ƒ.ComponentRigidbody);
-    // rigidbodySteve.effectRotation = ƒ.Vector3.Y();
-    // ƒ.Physics.settings.sleepingAngularVelocityThreshold = 0.1;
-    // let cmpCamera: ƒ.ComponentCamera = steve.getComponent(ƒ.ComponentCamera);
-    // viewport.camera = cmpCamera;
 
     generateWorld(9, 3, 9);
 
