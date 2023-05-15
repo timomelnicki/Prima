@@ -87,13 +87,13 @@ var Script;
     let rigidbodySteve;
     document.addEventListener("interactiveViewportStarted", start);
     async function start(_event) {
-        steve = Script.viewport.getBranch().getChildrenByName("Steve")[0];
-        rigidbodySteve = steve.getComponent(ƒ.ComponentRigidbody);
-        rigidbodySteve.effectRotation = ƒ.Vector3.Y();
         Script.viewport = _event.detail;
         Script.viewport.physicsDebugMode = ƒ.PHYSICS_DEBUGMODE.COLLIDERS;
         let camera = Script.viewport.getBranch().getChildrenByName("steve")[0].getComponent(ƒ.ComponentCamera);
         Script.viewport.camera = camera;
+        steve = Script.viewport.getBranch().getChildrenByName("steve")[0];
+        rigidbodySteve = steve.getComponent(ƒ.ComponentRigidbody);
+        rigidbodySteve.effectRotation = ƒ.Vector3.Y();
         generateWorld(9, 3, 9);
         let pickAlgorithm = [Script.pickByComponent, Script.pickByCamera, Script.pickByRadius, Script.pickByGrid];
         Script.viewport.canvas.addEventListener("pointerdown", pickAlgorithm[1]);
