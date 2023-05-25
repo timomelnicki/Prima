@@ -1,4 +1,4 @@
-/// <reference path="../../Physics/OimoPhysics.d.ts" />
+/// <reference path="../../Physics/OIMOPhysics.d.ts" />
 declare namespace FudgeCore {
     /**
      * Base class for the different DebugTargets, mainly for technical purpose of inheritance
@@ -671,6 +671,9 @@ declare namespace FudgeCore {
             RANDOM = "random",
             RANDOM_RANGE = "randomRange"
         }
+        const FUNCTION_PARAMETER_NAMES: {
+            [key in ParticleData.FUNCTION]?: string[];
+        };
         const FUNCTION_MINIMUM_PARAMETERS: {
             [key in ParticleData.FUNCTION]: number;
         };
@@ -683,18 +686,19 @@ declare namespace FudgeCore {
      * @authors Jonas Plotzky, HFU, 2022
      */
     class RenderInjectorShaderParticleSystem extends RenderInjectorShader {
+        static readonly RANDOM_NUMBERS_TEXTURE_MAX_WIDTH: number;
         static readonly FUNCTIONS: {
             [key in ParticleData.FUNCTION]: Function;
         };
         static decorate(_constructor: Function): void;
         static getVertexShaderSource(this: ShaderParticleSystem): string;
         static getFragmentShaderSource(this: ShaderParticleSystem): string;
+        private static renameVariables;
         private static generateVariables;
         private static generateTransformations;
         private static generateColor;
         private static generateExpression;
         private static generateFunction;
-        private static replaceFunctions;
     }
 }
 declare namespace FudgeCore {
@@ -903,11 +907,6 @@ declare namespace FudgeCore {
          */
         toVector3(_z?: number): Vector3;
         toString(): string;
-        /**
-         * Uses the standard array.map functionality to perform the given function on all components of this vector
-         * and return a new vector with the results
-         */
-        map(_function: (value: number, index: number, array: Float32Array) => number): Vector2;
         serialize(): Serialization;
         deserialize(_serialization: Serialization): Promise<Vector2>;
         getMutator(): Mutator;
@@ -1025,7 +1024,6 @@ declare namespace FudgeCore {
      */
     abstract class RenderWebGL extends EventTargetStatic {
         protected static crc3: WebGL2RenderingContext;
-        static readonly maxTextureSize: number;
         protected static ƒpicked: Pick[];
         private static rectRender;
         private static sizePick;
@@ -2226,12 +2224,6 @@ declare namespace FudgeCore {
     }
 }
 declare namespace FudgeCore {
-    enum PARTICLE_SYSTEM_PLAYMODE {
-        /**Plays particle system in a loop: it restarts once it hit the end.*/
-        LOOP = 0,
-        /**Plays particle system once and stops at the last point in time.*/
-        PLAY_ONCE = 1
-    }
     /**
      * Attaches a {@link ParticleSystem} to the node.
      * Works in conjunction with {@link ComponentMesh} and {@link ComponentMaterial} to create a shader particle system.
@@ -2243,13 +2235,12 @@ declare namespace FudgeCore {
         static readonly iSubclass: number;
         /** A texture filed with random numbers. Used by particle shader */
         renderData: unknown;
-        particleSystem: ParticleSystem;
         /** When disabled try enabling {@link ComponentMaterial.prototype.sortForAlpha} */
         depthMask: boolean;
         blendMode: BLEND;
-        playMode: PARTICLE_SYSTEM_PLAYMODE;
-        duration: number;
-        constructor(_particleSystem?: ParticleSystem);
+        particleSystem: ParticleSystem;
+        readonly time: Time;
+        constructor(_particleSystem?: ParticleSystem, _size?: number);
         /**
          * Get the number of particles
          */
@@ -2258,10 +2249,6 @@ declare namespace FudgeCore {
          * Set the number of particles. Caution: Setting this will reinitialize the random numbers array(texture) used in the shader.
          */
         set size(_size: number);
-        get time(): number;
-        set time(_time: number);
-        get timeScale(): number;
-        set timeScale(_scale: number);
         useRenderData(): void;
         deleteRenderData(): void;
         serialize(): Serialization;
@@ -2271,9 +2258,6 @@ declare namespace FudgeCore {
         getMutatorForAnimation(): MutatorForAnimation;
         getMutatorAttributeTypes(_mutator: Mutator): MutatorAttributeTypes;
         protected reduceMutator(_mutator: Mutator): void;
-        hndEvent: (_event: Event) => void;
-        private update;
-        private updateTimeScale;
     }
 }
 declare namespace FudgeCore {
@@ -3804,7 +3788,6 @@ declare namespace FudgeCore {
         toString(): string;
         /**
          * Uses the standard array.map functionality to perform the given function on all components of this vector
-         * and return a new vector with the results
          */
         map(_function: (value: number, index: number, array: Float32Array) => number): Vector3;
         serialize(): Serialization;
@@ -4035,8 +4018,6 @@ declare namespace FudgeCore {
         positionFace: Vector3;
         /** the index of the face the position is inside */
         index: number;
-        /** the grid coordinates of the quad the face belongs to */
-        grid: Vector2;
     }
     /**
      * A terrain spreads out in the x-z-plane, y is the height derived from the heightmap function.
@@ -4059,8 +4040,6 @@ declare namespace FudgeCore {
          * If at hand, pass the inverse too to avoid unnecessary calculation.
          */
         getTerrainInfo(_position: Vector3, _mtxWorld?: Matrix4x4, _mtxInverse?: Matrix4x4): TerrainInfo;
-        getGridFromFaceIndex(_index: number): Vector2;
-        getFaceIndicesFromGrid(_grid: Vector2): number[];
         serialize(): Serialization;
         deserialize(_serialization: Serialization): Promise<Serializable>;
         mutate(_mutator: Mutator): Promise<void>;
@@ -4262,14 +4241,21 @@ declare namespace FudgeCore {
      */
     namespace ParticleData {
         interface System {
-            variableNames?: string[];
-            variables?: Expression[];
-            color?: Expression[];
+            variables?: {
+                [name: string]: Expression;
+            };
+            color?: Color;
             mtxLocal?: Transformation[];
             mtxWorld?: Transformation[];
         }
-        type Recursive = System | Expression[] | Transformation[] | Transformation | Expression;
-        type Expression = Function | Variable | Constant | Code;
+        type Recursive = System | System["variables"] | Color | System["mtxLocal"] | Transformation | Expression;
+        interface Color {
+            r?: Expression;
+            g?: Expression;
+            b?: Expression;
+            a?: Expression;
+        }
+        type Expression = Function | Variable | Constant;
         interface Function {
             function: FUNCTION;
             parameters: Expression[];
@@ -4280,18 +4266,16 @@ declare namespace FudgeCore {
         interface Constant {
             value: number;
         }
-        interface Code {
-            code: string;
-        }
         interface Transformation {
             transformation: "translate" | "rotate" | "scale";
-            parameters: Expression[];
+            x?: Expression;
+            y?: Expression;
+            z?: Expression;
         }
         function isExpression(_data: Recursive): _data is Expression;
         function isFunction(_data: Recursive): _data is Function;
         function isVariable(_data: Recursive): _data is Variable;
         function isConstant(_data: Recursive): _data is Constant;
-        function isCode(_data: Recursive): _data is Code;
         function isTransformation(_data: Recursive): _data is Transformation;
     }
     /**
@@ -5612,9 +5596,6 @@ declare namespace FudgeCore {
      * @author Jirka Dell'Oro-Friedl, HFU, 2021
      */
     class MutableArray<T extends Mutable> extends Array<T> {
-        #private;
-        constructor(_type: new () => T, ..._args: T[]);
-        get type(): new () => T;
         rearrange(_sequence: number[]): void;
         getMutatorAttributeTypes(_mutator: Mutator): MutatorAttributeTypes;
         getMutator(): Mutator;

@@ -3,39 +3,128 @@ var Script;
 (function (Script) {
     var ƒ = FudgeCore;
     class Block extends ƒ.Node {
-        constructor(_position, _color) {
+        //static matCube: ƒ.Material = new ƒ.Material("Block", ƒ.ShaderFlatTextured, new ƒ.CoatRemissiveTextured);
+        constructor(_position, _material) {
             super("Block");
-            this.addComponent(new ƒ.ComponentMesh(Block.mshCube));
-            let cmpMaterial = new ƒ.ComponentMaterial(Block.mtrCube);
-            cmpMaterial.clrPrimary = _color;
+            this.addComponent(new ƒ.ComponentMesh(Block.meshCube));
+            let cmpMaterial = new ƒ.ComponentMaterial(_material);
             this.addComponent(cmpMaterial);
-            this.addComponent(new ƒ.ComponentTransform(ƒ.Matrix4x4.TRANSLATION(_position)));
-            let cmpPick = new ƒ.ComponentPick();
-            cmpPick.pick = ƒ.PICK.CAMERA;
-            this.addComponent(cmpPick);
-            let cmpRigidbody = new ƒ.ComponentRigidbody(1, ƒ.BODY_TYPE.STATIC, ƒ.COLLIDER_TYPE.CUBE);
-            this.addComponent(cmpRigidbody);
-            // cmpRigidbody.addEventListener(ƒ.EVENT_PHYSICS.COLLISION_ENTER, () => console.log("Collision"));
+            let cmpTransform = new ƒ.ComponentTransform(ƒ.Matrix4x4.TRANSLATION(_position));
+            this.addComponent(cmpTransform);
+            let cmpPicker = new ƒ.ComponentPick();
+            cmpPicker.pick = ƒ.PICK.RADIUS;
+            this.addComponent(cmpPicker);
+            let cpmRigidbody = new ƒ.ComponentRigidbody(1, ƒ.BODY_TYPE.STATIC, ƒ.COLLIDER_TYPE.CUBE);
+            this.addComponent(cpmRigidbody);
         }
     }
-    Block.mshCube = new ƒ.MeshCube("Block");
-    Block.mtrCube = new ƒ.Material("Block", ƒ.ShaderFlat, new ƒ.CoatRemissive());
+    Block.meshCube = new ƒ.MeshCube("Block");
     Script.Block = Block;
 })(Script || (Script = {}));
 var Script;
 (function (Script) {
     var ƒ = FudgeCore;
+    // import ƒAid = FudgeAid;
+    ƒ.Debug.info("Main Program Template running!");
+    Script.grid = [];
+    let steve;
+    let rigidbodySteve;
+    let isGrounded = false;
+    let MINECRAFT;
+    (function (MINECRAFT) {
+        MINECRAFT["STEVE_COLLIDES"] = "steveCollides";
+    })(MINECRAFT || (MINECRAFT = {}));
+    document.addEventListener("interactiveViewportStarted", start);
+    // let worldGraph: ƒ.Node;
+    function setupSteve() {
+        steve = Script.viewport.getBranch().getChildrenByName("Steve")[0];
+        rigidbodySteve = steve.getComponent(ƒ.ComponentRigidbody);
+        rigidbodySteve.effectRotation = ƒ.Vector3.Y();
+        ƒ.Physics.settings.sleepingAngularVelocityThreshold = 0.1;
+        console.log(steve.getComponent(ƒ.ComponentCamera));
+        let cmpCamera = steve.getComponent(ƒ.ComponentCamera);
+        Script.viewport.camera = cmpCamera;
+        rigidbodySteve.addEventListener("ColliderEnteredCollision" /* COLLISION_ENTER */, steveCollided);
+    }
+    function start(_event) {
+        Script.viewport = _event.detail;
+        // viewport.physicsDebugMode = ƒ.PHYSICS_DEBUGMODE.COLLIDERS;
+        // viewport.canvas.addEventListener("contextmenu", _event => _event.preventDefault());
+        setupSteve();
+        generateWorld(10, 3, 9);
+        let pickAlgorithm = [Script.pickByComponent, Script.pickByCamera, Script.pickByRadius, Script.pickByGrid];
+        Script.viewport.canvas.addEventListener("pointerdown", pickAlgorithm[1]);
+        Script.viewport.getBranch().addEventListener("pointerdown", Script.hitComponent);
+        Script.viewport.getBranch().addEventListener(MINECRAFT.STEVE_COLLIDES, (_event) => console.log(_event));
+        ƒ.Loop.addEventListener("loopFrame" /* LOOP_FRAME */, update);
+        ƒ.Loop.start(); // start the game loop to continously draw the viewport, update the audiosystem and drive the physics i/a
+    }
+    function steveCollided(_event) {
+        // let vtcCollision: ƒ.Vector3 = ƒ.Vector3.DIFFERENCE(_event.collisionPoint, steve.mtxWorld.translation);
+        // if(Math.abs(vtcCollision.x) < 0.1 && Math.abs(vtcCollision.z) < 0.1 );
+        isGrounded = true;
+        let customEvent = new CustomEvent(MINECRAFT.STEVE_COLLIDES, { bubbles: true, detail: steve.mtxWorld.translation });
+        steve.dispatchEvent(customEvent);
+    }
+    function update(_event) {
+        // rigidbodySteve.applyForce(ƒ.Vector3.Z(10));
+        if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.W, ƒ.KEYBOARD_CODE.ARROW_UP])) {
+            rigidbodySteve.applyForce(ƒ.Vector3.SCALE(rigidbodySteve.node.mtxWorld.getZ(), 2600));
+        }
+        if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.S, ƒ.KEYBOARD_CODE.ARROW_DOWN])) {
+            rigidbodySteve.applyForce(ƒ.Vector3.SCALE(rigidbodySteve.node.mtxWorld.getZ(), -2600));
+        }
+        if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.A, ƒ.KEYBOARD_CODE.ARROW_LEFT])) {
+            rigidbodySteve.applyTorque(ƒ.Vector3.Y(12));
+        }
+        if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.D, ƒ.KEYBOARD_CODE.ARROW_RIGHT])) {
+            rigidbodySteve.applyTorque(ƒ.Vector3.Y(-12));
+        }
+        if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.SPACE]) && isGrounded) {
+            rigidbodySteve.addVelocity(ƒ.Vector3.Y(7));
+            isGrounded = false;
+        }
+        ƒ.Physics.simulate(); // if physics is included and used
+        Script.viewport.draw();
+        ƒ.AudioManager.default.update();
+    }
+    function generateWorld(_width, _height, _depth) {
+        Script.blocks = new ƒ.Node("Blocks");
+        Script.viewport.getBranch().addChild(Script.blocks);
+        let standardMaterial = ƒ.Project.resources["Material|2023-04-21T12:29:48.810Z|82174"];
+        // let vctOffset: ƒ.Vector2 = new ƒ.Vector2(Math.floor(_width / 2), Math.floor(_depth / 2));
+        let vctOffset = ƒ.Vector2.ZERO();
+        for (let y = 0; y < _height; y++) {
+            Script.grid[y] = [];
+            for (let z = 0; z < _depth; z++) {
+                Script.grid[y][z] = [];
+                for (let x = 0; x < _width; x++) {
+                    let vctPostion = new ƒ.Vector3(x - vctOffset.x, y + Math.random() * 0.1, z - vctOffset.y);
+                    // let txtColor: string = ƒ.Random.default.getElement(["red", "lime", "blue", "yellow"]);
+                    let block = new Script.Block(vctPostion, standardMaterial);
+                    // block.name = vctPostion.toString() + "|" + txtColor;
+                    Script.blocks.addChild(block);
+                    Script.grid[y][z][x] = block;
+                }
+            }
+        }
+        console.log(Script.grid);
+    }
+})(Script || (Script = {}));
+var Script;
+(function (Script) {
+    var ƒ = FudgeCore;
     ƒ.Project.registerScriptNamespace(Script); // Register the namespace to FUDGE for serialization
-    class CustomComponentScript extends ƒ.ComponentScript {
+    class Physictester extends ƒ.ComponentScript {
+        // Properties may be mutated by users in the editor via the automatically created user interface
+        // public message: string = "CustomComponentScript added to ";
         constructor() {
             super();
-            // Properties may be mutated by users in the editor via the automatically created user interface
-            this.message = "CustomComponentScript added to ";
             // Activate the functions of this component as response to events
             this.hndEvent = (_event) => {
                 switch (_event.type) {
                     case "componentAdd" /* COMPONENT_ADD */:
-                        ƒ.Debug.log(this.message, this.node);
+                        this.node.addEventListener("renderPrepare" /* RENDER_PREPARE */, this.update);
                         break;
                     case "componentRemove" /* COMPONENT_REMOVE */:
                         this.removeEventListener("componentAdd" /* COMPONENT_ADD */, this.hndEvent);
@@ -45,6 +134,10 @@ var Script;
                         // if deserialized the node is now fully reconstructed and access to all its components and children is possible
                         break;
                 }
+            };
+            this.update = (_event) => {
+                let rigidBody = this.node.getComponent(ƒ.ComponentRigidbody);
+                rigidBody.applyTorque(ƒ.Vector3.Y(0));
             };
             // Don't start when running in editor
             if (ƒ.Project.mode == ƒ.MODE.EDITOR)
@@ -56,102 +149,8 @@ var Script;
         }
     }
     // Register the script as component for use in the editor via drag&drop
-    CustomComponentScript.iSubclass = ƒ.Component.registerSubclass(CustomComponentScript);
-    Script.CustomComponentScript = CustomComponentScript;
-})(Script || (Script = {}));
-var Script;
-(function (Script) {
-    var ƒ = FudgeCore;
-    ƒ.Debug.info("Main Program Template running!");
-    Script.grid3D = [];
-    Script.gridAssoc = {};
-    let steve;
-    let isGrounded = false;
-    let MINECRAFT;
-    (function (MINECRAFT) {
-        MINECRAFT["STEVE_COLLIDES"] = "steveCollides";
-    })(MINECRAFT || (MINECRAFT = {}));
-    document.addEventListener("interactiveViewportStarted", start);
-    async function start(_event) {
-        Script.viewport = _event.detail;
-        Script.viewport.physicsDebugMode = ƒ.PHYSICS_DEBUGMODE.COLLIDERS;
-        Script.viewport.canvas.addEventListener("contextmenu", _event => _event.preventDefault());
-        generateWorld(10, 3, 9);
-        let pickAlgorithm = [Script.pickByComponent, Script.pickByCamera, Script.pickByRadius, Script.pickByGrid];
-        Script.viewport.canvas.addEventListener("pointerdown", pickAlgorithm[1]);
-        Script.viewport.getBranch().addEventListener("pointerdown", Script.hitComponent);
-        Script.viewport.getBranch().addEventListener(MINECRAFT.STEVE_COLLIDES, (_event) => console.log(_event));
-        setupSteve();
-        ƒ.Loop.addEventListener("loopFrame" /* LOOP_FRAME */, update);
-        ƒ.Loop.start(); // start the game loop to continously draw the viewport, update the audiosystem and drive the physics i/a
-    }
-    function update(_event) {
-        controlSteve();
-        ƒ.Physics.simulate(); // if physics is included and used
-        Script.viewport.draw();
-        ƒ.AudioManager.default.update();
-    }
-    function setupSteve() {
-        // console.log(ƒ.Physics.settings.sleepingAngularVelocityThreshold);
-        steve = Script.viewport.getBranch().getChildrenByName("Steve")[0];
-        console.log(steve);
-        Script.viewport.camera = steve.getChild(0).getComponent(ƒ.ComponentCamera);
-        let cmpRigidbody = steve.getComponent(ƒ.ComponentRigidbody);
-        cmpRigidbody.effectRotation = ƒ.Vector3.Y();
-        cmpRigidbody.addEventListener("ColliderEnteredCollision" /* COLLISION_ENTER */, steveCollides);
-    }
-    function controlSteve() {
-        let cmpRigidbody = steve.getComponent(ƒ.ComponentRigidbody);
-        if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.A, ƒ.KEYBOARD_CODE.ARROW_LEFT]))
-            cmpRigidbody.applyTorque(ƒ.Vector3.Y(5));
-        if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.D, ƒ.KEYBOARD_CODE.ARROW_RIGHT]))
-            cmpRigidbody.applyTorque(ƒ.Vector3.Y(-5));
-        if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.W, ƒ.KEYBOARD_CODE.ARROW_UP]))
-            cmpRigidbody.applyForce(ƒ.Vector3.SCALE(steve.mtxWorld.getZ(), 1000));
-        if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.S, ƒ.KEYBOARD_CODE.ARROW_DOWN]))
-            cmpRigidbody.applyForce(ƒ.Vector3.SCALE(steve.mtxWorld.getZ(), -1000));
-        if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.SPACE]) && isGrounded) {
-            cmpRigidbody.addVelocity(ƒ.Vector3.Y(5));
-            isGrounded = false;
-        }
-    }
-    function steveCollides(_event) {
-        // let vctCollision: ƒ.Vector3 = ƒ.Vector3.DIFFERENCE(_event.collisionPoint, steve.mtxWorld.translation);
-        //if (Math.abs(vctCollision.x) < 0.1 && Math.abs(vctCollision.z) < 0.1 && vctCollision.y < 0) // collision below steve
-        isGrounded = true;
-        let customEvent = new CustomEvent(MINECRAFT.STEVE_COLLIDES, { bubbles: true, detail: steve.mtxWorld.translation });
-        steve.dispatchEvent(customEvent);
-    }
-    function generateWorld(_width, _height, _depth) {
-        Script.blocks = new ƒ.Node("Blocks");
-        Script.viewport.getBranch().addChild(Script.blocks);
-        // let vctOffset: ƒ.Vector2 = new ƒ.Vector2(Math.floor(_width / 2), Math.floor(_depth / 2));
-        let vctOffset = ƒ.Vector2.ZERO();
-        for (let y = 0; y < _height; y++) {
-            Script.grid3D[y] = [];
-            for (let z = 0; z < _depth; z++) {
-                Script.grid3D[y][z] = [];
-                for (let x = 0; x < _width; x++) {
-                    let vctPosition = new ƒ.Vector3(x - vctOffset.x, y + Math.random() * 0.2, z - vctOffset.y);
-                    let txtColor = ƒ.Random.default.getElement(["red", "lime", "blue", "yellow"]);
-                    createBlock(vctPosition, txtColor);
-                }
-            }
-        }
-        console.log(Script.gridAssoc);
-    }
-    function createBlock(_vctPosition, _txtColor) {
-        let block = new Script.Block(_vctPosition, ƒ.Color.CSS(_txtColor));
-        block.name = _vctPosition.toString() + "|" + _txtColor;
-        console.log(block.name);
-        Script.blocks.addChild(block);
-        Script.gridAssoc[_vctPosition.toString()] = block;
-        try {
-            Script.grid3D[_vctPosition.y][_vctPosition.z][_vctPosition.x] = block;
-        }
-        catch (_e) { }
-    }
-    Script.createBlock = createBlock;
+    Physictester.iSubclass = ƒ.Component.registerSubclass(Physictester);
+    Script.Physictester = Physictester;
 })(Script || (Script = {}));
 var Script;
 (function (Script) {
@@ -178,13 +177,8 @@ var Script;
         console.log("pickCamera");
         let picks = ƒ.Picker.pickViewport(Script.viewport, new ƒ.Vector2(_event.clientX, _event.clientY));
         picks.sort((_a, _b) => _a.zBuffer < _b.zBuffer ? -1 : 1);
-        let pick = picks[0];
-        if (_event.button == 1)
-            hitBlock(pick.node);
-        else if (_event.button == 2) {
-            let posNewBlock = ƒ.Vector3.SUM(pick.node.mtxWorld.translation, pick.normal);
-            addBlock(posNewBlock);
-        }
+        hitBlock(picks[0]?.node);
+        console.log(picks[0]);
     }
     Script.pickByCamera = pickByCamera;
     function pickByRadius(_event) {
@@ -219,8 +213,7 @@ var Script;
             let posGrid = posCheck.map(_value => Math.round(_value));
             console.log(posGrid.toString(), posCheck.toString());
             try {
-                let block = Script.grid3D[posGrid.y][posGrid.z][posGrid.x];
-                // let block = gridAssoc[posGrid.toString()];
+                let block = Script.grid[posGrid.y][posGrid.z][posGrid.x];
                 if (block) {
                     hitBlock(block);
                     return;
@@ -235,12 +228,6 @@ var Script;
             return;
         console.log(_block.name);
         _block.getParent().removeChild(_block);
-        Script.viewport.draw();
-    }
-    function addBlock(_pos) {
-        if (Script.gridAssoc[_pos.toString()]) // already a block there...
-            return;
-        Script.createBlock(_pos, "white");
         Script.viewport.draw();
     }
 })(Script || (Script = {}));

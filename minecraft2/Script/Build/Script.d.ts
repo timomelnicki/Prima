@@ -1,29 +1,24 @@
 declare namespace Script {
     import ƒ = FudgeCore;
     class Block extends ƒ.Node {
-        static mshCube: ƒ.MeshCube;
-        static mtrCube: ƒ.Material;
-        constructor(_position: ƒ.Vector3, _color: ƒ.Color);
-    }
-}
-declare namespace Script {
-    import ƒ = FudgeCore;
-    class CustomComponentScript extends ƒ.ComponentScript {
-        static readonly iSubclass: number;
-        message: string;
-        constructor();
-        hndEvent: (_event: Event) => void;
+        static meshCube: ƒ.MeshCube;
+        constructor(_position: ƒ.Vector3, _material: ƒ.Material);
     }
 }
 declare namespace Script {
     import ƒ = FudgeCore;
     let viewport: ƒ.Viewport;
     let blocks: ƒ.Node;
-    let grid3D: Block[][][];
-    let gridAssoc: {
-        [pos: string]: Block;
-    };
-    function createBlock(_vctPosition: ƒ.Vector3, _txtColor: string): void;
+    let grid: Block[][][];
+}
+declare namespace Script {
+    import ƒ = FudgeCore;
+    class Physictester extends ƒ.ComponentScript {
+        static readonly iSubclass: number;
+        constructor();
+        hndEvent: (_event: Event) => void;
+        update: (_event: Event) => void;
+    }
 }
 declare namespace Script {
     function pickByComponent(_event: PointerEvent): void;
