@@ -6,7 +6,9 @@ namespace Script {
   export let viewport: ƒ.Viewport;
   export let blocks: ƒ.Node;
   export let grid: Block[][][] = [];
-  let steve: ƒ.Node;
+  export let creeperrigidbody: ƒ.ComponentRigidbody;
+  export let NPC: ƒ.Node;
+  export let steve: ƒ.Node;
   let rigidbodySteve: ƒ.ComponentRigidbody;
   let isGrounded: boolean = false;
 
@@ -79,6 +81,9 @@ namespace Script {
       rigidbodySteve.addVelocity(ƒ.Vector3.Y(7));
       isGrounded = false;
     }
+
+    moveCreeper();
+
     ƒ.Physics.simulate();  // if physics is included and used
     viewport.draw();
     ƒ.AudioManager.default.update();

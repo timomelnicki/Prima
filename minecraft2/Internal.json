@@ -253,6 +253,15 @@
       }
     }
   },
+  "MeshSphere|2023-05-25T12:31:32.111Z|71418": {
+    "ƒ.MeshSphere": {
+      "idResource": "MeshSphere|2023-05-25T12:31:32.111Z|71418",
+      "name": "MeshSphere",
+      "type": "MeshSphere",
+      "longitudes": 12,
+      "latitudes": 7
+    }
+  },
   "Graph|2023-04-21T12:30:02.806Z|95777": {
     "ƒ.Graph": {
       "name": "Scene",
@@ -868,6 +877,13 @@
                     "idMaterial": "Material|2023-04-21T12:29:48.810Z|82174"
                   }
                 }
+              ],
+              "ComponentScript": [
+                {
+                  "ƒ.ComponentScript": {
+                    "active": true
+                  }
+                }
               ]
             },
             "children": []
@@ -959,15 +975,6 @@
           "specular": 0
         }
       }
-    }
-  },
-  "MeshSphere|2023-05-25T12:31:32.111Z|71418": {
-    "ƒ.MeshSphere": {
-      "idResource": "MeshSphere|2023-05-25T12:31:32.111Z|71418",
-      "name": "MeshSphere",
-      "type": "MeshSphere",
-      "longitudes": 12,
-      "latitudes": 7
     }
   }
 }
